@@ -1,0 +1,150 @@
+<div class="col mt-5">
+  <h1 class=" alert alert-dismissible app-page-title">Thùng rác của bạn</h1>
+  <a type="button" href="/admin/list" class="btn app-btn-primary mb-5 px-3">
+    <i class="fa-solid fa-arrow-left-long pr-2"></i>
+    Quay lại
+  </a>
+  <form action="/admin/check-action" method="POST">
+    <div>
+      <select class="custom-select custom-select-sm text-center ms-auto w-auto mx-2" name="action" required>
+        <option class="my-4" value="">-- Hành động --</option>
+        <option class="my-4" value="restore">Khôi phục</option>
+        <option class="my-4" value="detroy">Xóa vĩnh viễn</option>
+      </select>
+      <button class="btn btn-primary btn-submit-action px-3" disabled="disabled">Áp dụng</button>
+    </div>
+    <div class="col bg-white">
+      <table class="table mt-5 text-center">
+
+        <thead class="thead-dark">
+          <tr class="font-weight-bold text-center">
+            <td scope="col">
+              <input class="form-check-input" type="checkbox" value="" id="checkbox-all" />
+            </td>
+            <td scope="col">ID</td>
+            <td scope="col">Tên SP</td>
+            <td scope="col">Giá</td>
+            <td scope="col">Image</td>
+            <td scope="col">Thao tác
+
+          </tr>
+        </thead>
+        <tbody>
+          {{#each products}}
+          <tr class="list-admin">
+            <td class="td_checkbox">
+              <input class="form-check-input align-middle" type="checkbox" value="{{this._id}}" name="checkIDs[]" />
+            </td>
+            <td class="td_id" scope="row">{{this._id}}</td>
+            <td class="align-middle td_name">{{this.name}}</td>
+            <td>{{this.price}}</td>
+            <td><img class="list-img-admin" src="/images/{{this.image}}" /></td>
+            <td class="td_action">
+              <a href="" class="btn-restore btn btn-success" data-id="{{this._id}}">
+                <i class="fa-solid fa-rotate-left"></i>
+                Khôi phục
+              </a>
+              <button id="btn-delete" type="button" class="btn btn-danger" data-id="{{this._id}}" data-bs-toggle="modal"
+                data-bs-target="#delele-product-modal">
+                <i class="fa-solid fa-ban"></i>
+                Xóa
+              </button>
+            </td>
+          </tr>
+          {{else}}
+          <td class="text-center" colspan="5">Thùng rác trống.
+            <a class="btn btn-success" href="/admin/list">Danh sách khóa học</a>
+          </td>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </form>
+  {{! Hidden form }}
+  <form id="hidden-form-detroy" method="POST">
+
+  </form>
+  <form id="hidden-form-restore" method="POST">
+
+  </form>
+  {{! Model }}
+
+  <!-- Modal -->
+  <div class="modal" id="delele-product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mt-30" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Xóa sản phẩm?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn xóa?
+        </div>
+        <div class="modal-footer">
+          <button id="btn-comfirm-detroy" type="button" class="btn btn-danger">Xóa bỏ</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var btnRestore = $('.btn-restore');
+    var btnConfirm = document.getElementById('btn-comfirm-detroy');
+    var formDetroy = document.getElementById('hidden-form-detroy');
+    var formRestore = document.getElementById('hidden-form-restore');
+    var checkboxAll = $("#checkbox-all");
+    var formAction = $("#form-action");
+    var btnSubmitAction = $(".btn-submit-action");
+    var checkBox = $('input[name="checkIDs[]"]');
+    $('#delele-product-modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var id = button.data('id');
+      btnConfirm.onclick = function () {
+        formDetroy.action = '/admin/' + id + '/detroy?_method=delete';
+        formDetroy.submit();
+      }
+
+    })
+    //Change checkboxAll
+    checkboxAll.change(function () {
+      var ischeckedAll = checkboxAll.prop('checked');
+      checkBox.prop('checked', ischeckedAll);
+      handleToggleBtnAction()
+    })
+    //change checkbox
+    checkBox.change(function () {
+      var ischeckedAll = checkBox.length === $('input[name="checkIDs[]"]:checked').length;
+      checkboxAll.prop('checked', ischeckedAll);
+      handleToggleBtnAction()
+
+    })
+    // Disable button action 
+    function handleToggleBtnAction() {
+      var isCheked = $('input[name="checkIDs[]"]:checked').length;
+      if (isCheked > 0) {
+        btnSubmitAction.attr('disabled', false);
+      } else {
+        btnSubmitAction.attr('disabled', true);
+      }
+    }
+
+
+    //when btn clicked restore
+    btnRestore.click(function (e) {
+      e.preventDefault();
+      var restoreID = $(this).data('id');
+      formRestore.action = '/admin/' + restoreID + '/restore?_method=PATCH';
+      formRestore.submit();
+    })
+  })
+
+</script>

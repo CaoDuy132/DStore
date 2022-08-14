@@ -1,0 +1,168 @@
+<div class="col w-100">
+  <form id="form-action" action="/admin/check-action" method="POST" >
+  <div class="col">
+    <select class="custom-select custom-select-sm text-center" name="action" required>
+      <option value=""> -- Hành động --</option>
+      <option value="delete">Xóa</option>
+    </select>
+    <button class="btn btn-primary btn-submit-action" disabled="disabled">Áp dụng</button>
+    <a class="d-flex justify-content-end" href="/admin/trash"><img
+        class="img-trash"
+        src="/images/icons/icon_trash.svg.png"
+        alt="trash"
+      />Thùng rác ({{deletedCount}})</a>
+  </div>
+
+  <table class="table table-striped mt-5">
+
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="checkbox-all"
+          />
+        </th>
+        <th scope="col">ID
+          {{{sortable '_id' sort}}}
+        </th>
+        <th scope="col">Tên SP
+          {{{sortable 'name' sort}}}
+         </th>
+        <th scope="col">Giá
+           {{{sortable 'price' sort}}}
+        </th>
+         
+        <th scope="col">Hình ảnh</th>
+        <th scope="col">Thao tác
+        </th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+        <tr class="list-admin">
+          <td>
+            <input
+              class="form-check-input align-middle"
+              type="checkbox"
+              value="{{this._id}}"
+              name="checkIDs[]"
+            />
+          </td>
+          <td scope="row">{{this._id}}</td>
+          <td class="align-middle">{{this.name}}</td>
+          <td>{{this.price}}</td>
+          <td><img class="list-img-admin" src="/images/{{this.image}}" /></td>
+          <td>
+            <a href="{{this._id}}/edit">Sửa</a>
+            <button
+              id="btn-delete"
+              type="button"
+              class="btn btn-danger"
+              data-id="{{this._id}}"
+              data-toggle="modal"
+              data-target="#delele-product-modal"
+            >
+              Xóa
+            </button>
+          </td>
+
+        </tr>
+      {{else}}
+        <td class="text-center" colspan="5">Không có sản phẩm để hiển thị. Click
+          để thêm sản phẩm
+          <a class="btn btn-success" href="/admin/create">Bấm vào đây</a></td>
+      {{/each}}
+    </tbody>
+  </table>
+  </form>
+  {{! Hidden form }}
+  <form id="hidden-form-delete" method="POST">
+
+  </form>
+  {{! Model }}
+
+  <!-- Modal -->
+  <div
+    class="modal"
+    id="delele-product-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered mt-30" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="exampleModalLongTitle">Xóa sản
+            phẩm ?</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn xóa ?
+        </div>
+        <div class="modal-footer">
+          <button
+            id="btn-comfirm-delete"
+            type="button"
+            class="btn btn-danger"
+          >Xóa bỏ</button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  var btnConfirm = document.getElementById("btn-comfirm-delete");
+  var formDelete = document.getElementById("hidden-form-delete");
+  var checkboxAll = $("#checkbox-all");
+  var formAction = $("#form-action");
+  var btnSubmitAction = $(".btn-submit-action");
+  var checkBox = $('input[name="checkIDs[]"]');
+  //Change checkboxAll
+  checkboxAll.change(function(){
+    var ischeckedAll = checkboxAll.prop('checked');
+    checkBox.prop('checked',ischeckedAll);
+    handleToggleBtnAction()
+  })
+  //change checkbox
+  checkBox.change(function(){
+      var ischeckedAll = checkBox.length===$('input[name="checkIDs[]"]:checked').length;
+      checkboxAll.prop('checked',ischeckedAll);
+      handleToggleBtnAction()
+  
+  })
+  // Disable button action 
+      function handleToggleBtnAction(){
+          var isCheked = $('input[name="checkIDs[]"]:checked').length;
+          if(isCheked>0){
+            btnSubmitAction.attr('disabled',false);
+          }else{
+            btnSubmitAction.attr('disabled',true);
+          }
+    }
+
+  $("#delele-product-modal").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget);
+    var id = button.data("id");
+    console.log(id);
+    btnConfirm.onclick = function () {
+      formDelete.action = "/admin/" + id + "/delete?_method=DELETE";
+      formDelete.submit();
+    };
+  });
+});
+
+</script>
+
+{{!-- <script src="/js/admin-list-product.js"></script> --}}

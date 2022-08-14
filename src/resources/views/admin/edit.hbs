@@ -1,0 +1,39 @@
+<h1 class=" alert alert-dismissible app-page-title">Cập nhật sản phẩm</h1>
+<form class="w-50 mx-auto" method="post" action="/admin/{{product._id}}/update?_method=PUT">
+  <!-- Name input -->
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form4Example1">Tên sản phẩm</label>
+    <input type="text" id="form4Example1" name="name" class="form-control" value="{{product.name}}"
+      placeholder="Nhập tên sản phẩm" />
+  </div>
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form4Example2">Giá</label>
+    <input type="text" id="form4Example2" name="price" class="form-control" value="{{product.price}}"
+      placeholder="Nhập giá cho sản phẩm" />
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form4Example2">Hình ảnh</label>
+    <input type="file" id="form4Example2" name="profile_pic" class="form-control" value="{{product.image}}"
+      placeholder="Nhập giá cho sản phẩm" />
+  </div>
+  {{!-- Image input --}}
+
+
+  <!-- Message input -->
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form4Example3">Mô tả sản phẩm </label>
+    <textarea class="form-control" id="form4Example3" name="description" rows="4"
+      placeholder="Nhập mô tả cho sản phẩm">{{product.description}}</textarea>
+  </div>
+
+  <!-- Checkbox -->
+
+  </div>
+
+  <!-- Submit button -->
+  <div class="col-6 mx-auto">
+    <button type="submit" class="btn btn-success btn-block mb-4">CẬP NHẬT</button>
+  </div>
+</form>
