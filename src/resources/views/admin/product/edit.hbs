@@ -1,0 +1,42 @@
+<div class="app-page-title mb-5">Cập nhật sản phẩm</div>
+<form class="w-50 mx-auto" method="post" action="/admin/{{product._id}}/update?_method=PUT"
+  enctype="multipart/form-data">
+  <!-- Name input -->
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example1">Tên sản phẩm(*)</label>
+    <input type="text" id="form4Example1" name="name" class="form-control" value="{{product.name}}"
+      placeholder="Nhập tên sản phẩm" required="true" />
+  </div>
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example2">Giá(*)</label>
+    <input type="text" id="form4Example2" name="price" class="form-control" value="{{product.price}}"
+      placeholder="Nhập giá cho sản phẩm" required="true" />
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="customFile">Avatar(*)</label>
+    <div class="mb-2"><img src="/images/{{product.image}}" alt="{{product.image}}"
+        class="rounded-circle list-img-admin">
+    </div>
+    <input type="file" id="customFile" name="image" class="form-control">
+  </div>
+  {{!-- Image input --}}
+
+
+  <!-- Message input -->
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example3">Mô tả sản phẩm (*)</label>
+    <textarea class="form-control" id="form4Example3" name="description" rows="4" placeholder="Nhập mô tả cho sản phẩm"
+      required="true">{{product.description}}</textarea>
+  </div>
+
+  <!-- Checkbox -->
+
+  </div>
+
+  <!-- Submit button -->
+  <div class="col-6 col-lg-6 mx-auto">
+    <button type="submit" class="btn btn-success btn-block mb-4 ">Cập nhật</button>
+  </div>
+</form>

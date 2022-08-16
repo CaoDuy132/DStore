@@ -2,9 +2,10 @@ const express = require('express');
 require('dotenv').config();
 const path = require('path');
 const app = express();
-const port = 8080;
+const port = 8088;
 const route = require('./routes');
 const db = require('./config/db');
+const cookieParser = require('cookie-parser');
 //method override restAPI
 var methodOverride = require('method-override');
 //connect Middleware
@@ -12,6 +13,7 @@ const SortMiddleware = require('./app/middlewares/SortMiddleware');
 //connect db to expressdb
 db.connect();
 //--------------------------------------------//
+app.use(cookieParser());
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({
     extname: '.hbs',

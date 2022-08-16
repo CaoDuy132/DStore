@@ -7,7 +7,7 @@ const {
 class SiteController {
     //[GET]/news
     index(req, res, next) {
-        Product.find({})
+        Product.find({}).limit(8)
             .then((products) => {
                 res.render('home', {
                     title: 'Trang chủ',

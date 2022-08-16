@@ -14,7 +14,7 @@ const Product = new Schema(
         },
         price: { type: String, maxLength: 255, required: true },
         description: { type: String, trim: true, required: true },
-        image: { type: String, maxLength: 255, required: true },
+        image: { type: String, required: true },
         slug: { type: String, slug: 'name', unique: true },
     },
     { timestamps: true, _id: false },

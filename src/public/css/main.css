@@ -137,8 +137,8 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 .list-img-admin {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
 }
 
 .list-admin td {
@@ -3315,6 +3315,8 @@ input.num-product::-webkit-inner-spin-button {
 
 .hov-img0 img {
   width: 100%;
+  max-width: 250px;
+  height: 200px;
   -webkit-transition: transform 0.9s ease;
   -o-transition: transform 0.9s ease;
   -moz-transition: transform 0.9s ease;

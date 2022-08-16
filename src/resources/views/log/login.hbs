@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/log.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/fontawesome/css/all.min.css">
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form method="POST" id="form-register" action="/admin/register/store">
+                <h1>Tạo tài khoản </h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>Sử dụng email của bạn để đăng ký</span>
+                <input type="text" name="fullname" placeholder="Họ và tên " />
+                <input type="email" name="email" placeholder="Email" />
+                <input type="test" name="phone" placeholder="Số điện thoại" />
+                <input type="password" name="password" placeholder="Mật khẩu" />
+                <button class="btn-register" id="btn-register">Đăng ký</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form method="POST" id="form-login" action="/admin/login/store">
+                <h1>Đăng nhập</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>Sử dụng tài khoản của bạn</span>
+                <input type="email" name="email" placeholder="Email" />
+                <input type="password" name="password" placeholder="Mật khẩu" />
+                <a href="#">Quên mật khẩu?</a>
+                <button class="btn-signIn" id="btn-login">Đăng nhập</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Chào bạn!</h1>
+                    <p>Để giữ kết nối với chúng tôi, vui lòng nhập đúng thông tin cá nhân của bạn <i
+                            class="fa-solid fa-arrow-right-long"></i> </p>
+                    <button class="ghost btn-register" id="signIn">Đăng nhập</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Chào bạn!</h1>
+                    <p>Tạo thông tin cá nhân và bắt đầu với chúng tôi</p>
+                    <button class="ghost btn-register" id="signUp">Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/log.js"> </script>
+</body>
+
+</html>

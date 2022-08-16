@@ -1,0 +1,177 @@
+<div class="app-page-title mb-5">Danh sách người dùng</div>
+<a href="/admin/user/create" class="btn app-btn-primary mb-2 px-3"><i class="fa-solid fa-plus"></i> Thêm mới</a>
+<form id="form-action" action="/admin/user/check-user-action" method="POST">
+    <div class="col d-flex justify-content-between mb-5">
+        <div>
+            <select class="custom-select custom-select-sm text-center ms-auto w-auto mx-2" name="action" required>
+                <option class="my-4" value="">-- Hành động --</option>
+                <option class="my-4" value="delete">Xóa</option>
+            </select>
+            <button class="btn btn-primary btn-submit-action px-3" disabled="disabled">Áp dụng</button>
+        </div>
+        <div>
+            <a class="d-flex justify-content-end btn btn-secondary" href="/admin/user/trash"><i
+                    class="fa-solid fa-trash-arrow-up mt-1 pr-1"></i> Thùng rác ({{deletedCount}})
+            </a>
+        </div>
+    </div>
+    <div class="tab-content" id="orders-table-tab-content">
+        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+
+                <div class="app-card-body">
+                    <div class="table-responsive">
+
+
+                        <table class="table app-table-hover mb-0 text-left">
+                            <thead>
+                                <th class="cell pl-5 text-center">
+
+                                    <input class="form-check-input" type="checkbox" value="" id="checkbox-all" />
+                                </th>
+                                <th scope="col">
+                                    ID
+                                    {{{sortable '_id' sort}}}
+                                </th>
+                                <th scope="col">Tên người dùng
+                                    {{{sortable 'name' sort}}}
+                                </th>
+                                <th scope="col">Email
+                                    {{{sortable 'price' sort}}}
+                                <th scope="col">Quyền</th>
+                                </th>
+                                <th scope="col">Ảnh</th>
+                                <th scope="col">Thao tác
+                                </th>
+
+                                </tr>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each users}}
+                                <tr>
+                                    <td class="td_checkbox pl-5">
+                                        <input class="form-check-input checkbox mb-3" type="checkbox"
+                                            value="{{this._id}}" name="checkIDs[]" />
+                                    </td>
+                                    <td class="cell">{{this._id}}</td>
+                                    <td class="cell"><span class="truncate">{{this.fullname}}</span></td>
+                                    <td class="cell">{{this.email}}</td>
+                                    <td class="cell">Admin</td>
+
+                                    <td class="cell"><img class="list-img-admin" src="/images/{{this.image}}" alt="">
+                                    </td>
+
+                                    <td class="td_action">
+                                        <a class="btn btn-outline-info" href="{{this._id}}/edit">
+                                            <i class="fa-solid fa-marker"></i>
+                                            Sửa
+                                        </a>
+                                        <button id="btn-delete" type="button" class="btn btn-outline-danger"
+                                            data-id="{{this._id}}" data-bs-toggle="modal"
+                                            data-bs-target="#delele-product-modal">
+                                            <i class="fa-solid fa-delete-left"></i>
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{else}}
+                                <td class="text-center" colspan="5">Không có sản phẩm để hiển thị. Click
+                                    để thêm sản phẩm
+                                    <a class="btn btn-success" href="/admin/user/create">Bấm vào đây</a>
+                                </td>
+                                {{/each}}
+                            </tbody>
+                        </table>
+</form>
+{{!-- Hidden form --}}
+<form id="hidden-form-delete" method="POST">
+</form>
+</div>
+<!--//table-responsive-->
+
+</div>
+<!--//app-card-body-->
+</div>
+<!--//app-card-->
+<nav class="app-pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>
+<!--//app-pagination-->
+
+</div>
+<!--//tab-pane-->
+</div>
+{{!-- modal --}}
+<div class="modal" id="delele-product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mt-30" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLongTitle">Xóa sản
+                    phẩm ?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa ?
+            </div>
+            <div class="modal-footer">
+                <button id="btn-comfirm-delete" type="button" class="btn btn-danger">Xóa bỏ</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--//tab-content-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var btnConfirm = document.getElementById("btn-comfirm-delete");
+        var formDelete = document.getElementById("hidden-form-delete");
+        var checkboxAll = $("#checkbox-all");
+        var formAction = $("#form-action");
+        var btnSubmitAction = $(".btn-submit-action");
+        var checkBox = $('input[name="checkIDs[]"]');
+        //Change checkboxAll
+        checkboxAll.change(function () {
+            var ischeckedAll = checkboxAll.prop('checked');
+            checkBox.prop('checked', ischeckedAll);
+            handleToggleBtnAction()
+        })
+        //change checkbox
+        checkBox.change(function () {
+            var ischeckedAll = checkBox.length === $('input[name="checkIDs[]"]:checked').length;
+            checkboxAll.prop('checked', ischeckedAll);
+            handleToggleBtnAction()
+
+        })
+        // Disable button action 
+        function handleToggleBtnAction() {
+            var isCheked = $('input[name="checkIDs[]"]:checked').length;
+            if (isCheked > 0) {
+                btnSubmitAction.attr('disabled', false);
+            } else {
+                btnSubmitAction.attr('disabled', true);
+            }
+        }
+
+        $("#delele-product-modal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            btnConfirm.onclick = function () {
+                formDelete.action = "/admin/user/" + id + "/delete?_method=DELETE";
+                formDelete.submit();
+            };
+        });
+    });
+
+</script>

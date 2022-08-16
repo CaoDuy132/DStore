@@ -1,0 +1,186 @@
+<div class="app-page-title text-center mb-5">Thùng rác</div>
+<a href="/admin/list" class="btn app-btn-primary mb-2 px-3"><i class="fa-solid fa-angles-left"></i> Trở về</a>
+<form id="form-action" action="/admin/check-product-action" method="POST">
+  <div class="col d-flex justify-content-between mb-5">
+    <div>
+      <select class="custom-select custom-select-sm text-center ms-auto w-auto mx-2" name="action" required>
+        <option class="my-4" value="">-- Hành động --</option>
+        <option class="my-4" value="restore">Khôi phục</option>
+        <option class="my-4" value="detroy">Xóa vĩnh viễn</option>
+      </select>
+      <button class="btn btn-primary btn-submit-action px-3" disabled="disabled">Áp dụng</button>
+    </div>
+
+  </div>
+  <div class="tab-content" id="orders-table-tab-content">
+    <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+      <div class="app-card app-card-orders-table shadow-sm mb-5">
+
+        <div class="app-card-body">
+          <div class="table-responsive">
+
+
+            <table class="table app-table-hover mb-0 text-left">
+              <thead>
+                <th class="cell pl-5 text-center">
+
+                  <input class="form-check-input" type="checkbox" value="" id="checkbox-all" />
+                </th>
+                <th scope="col">
+                  ID
+                  {{{sortable '_id' sort}}}
+                </th>
+                <th scope="col">Tên SP
+                  {{{sortable 'name' sort}}}
+                </th>
+                <th scope="col">Price
+                  {{{sortable 'price' sort}}}
+                </th>
+                <th scope="col">Ảnh</th>
+                <th scope="col">Thao tác
+                </th>
+
+                </tr>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each products}}
+                <tr>
+                  <td class="td_checkbox pl-5">
+                    <input class="form-check-input checkbox mb-3" type="checkbox" value="{{this._id}}"
+                      name="checkIDs[]" />
+                  </td>
+                  <td class="cell">{{this._id}}</td>
+                  <td class="cell"><span class="truncate">{{this.name}}</span></td>
+                  <td class="cell">{{this.price}}</td>
+
+                  <td class="cell"><img class="list-img-admin" src="/images/{{this.image}}" alt=""></td>
+
+                  <td class="td_action">
+                    <a href="" class="btn-restore btn btn-outline-success" data-id="{{this._id}}">
+                      <i class="fa-solid fa-rotate-left"></i>
+                      Khôi phục
+                    </a>
+                    <button id="btn-delete" type="button" class="btn btn-outline-danger" data-id="{{this._id}}"
+                      data-bs-toggle="modal" data-bs-target="#delele-product-modal">
+                      <i class="fa-solid fa-delete-left"></i>
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+                {{else}}
+                <td class="text-center" colspan="6">Thùng rác trống.
+                  <a class="btn btn-success" href="/admin/create">Trở về</a>
+                </td>
+                {{/each}}
+              </tbody>
+            </table>
+
+</form>
+<form id="hidden-form-delete" method="POST">
+</form>
+<form id="hidden-form-restore" method="POST">
+
+</form>
+{{!-- Hidden form --}}
+
+</div>
+<!--//table-responsive-->
+
+</div>
+<!--//app-card-body-->
+</div>
+<!--//app-card-->
+<nav class="app-pagination">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+    </li>
+    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</nav>
+<!--//app-pagination-->
+
+</div>
+<!--//tab-pane-->
+</div>
+{{!-- modal --}}
+<div class="modal" id="delele-product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered mt-30" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center" id="exampleModalLongTitle">Xóa sản
+          phẩm ?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa ?
+      </div>
+      <div class="modal-footer">
+        <button id="btn-comfirm-delete" type="button" class="btn btn-danger">Xóa bỏ</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--//tab-content-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btnConfirm = document.getElementById("btn-comfirm-delete");
+    var btnRestore = $('.btn-restore');
+    var formDelete = document.getElementById("hidden-form-delete");
+    var formRestore = document.getElementById('hidden-form-restore');
+    var checkboxAll = $("#checkbox-all");
+    var formAction = $("#form-action");
+    var btnSubmitAction = $(".btn-submit-action");
+    var checkBox = $('input[name="checkIDs[]"]');
+    //Change checkboxAll
+    checkboxAll.change(function () {
+      var ischeckedAll = checkboxAll.prop('checked');
+      checkBox.prop('checked', ischeckedAll);
+      handleToggleBtnAction()
+    })
+    //change checkbox
+    checkBox.change(function () {
+      var ischeckedAll = checkBox.length === $('input[name="checkIDs[]"]:checked').length;
+      checkboxAll.prop('checked', ischeckedAll);
+      handleToggleBtnAction()
+
+    })
+    // Disable button action 
+    function handleToggleBtnAction() {
+      var isCheked = $('input[name="checkIDs[]"]:checked').length;
+      if (isCheked > 0) {
+        btnSubmitAction.attr('disabled', false);
+      } else {
+        btnSubmitAction.attr('disabled', true);
+      }
+    }
+    //when btn clicked restore
+    btnRestore.click(function (e) {
+      e.preventDefault();
+      console.log(btnRestore)
+      var restoreID = $(this).data('id');
+      formRestore.action = '/admin/' + restoreID + '/restore?_method=PATCH';
+      formRestore.submit();
+    })
+
+    $("#delele-product-modal").on("show.bs.modal", function (event) {
+      var button = $(event.relatedTarget);
+      var id = button.data("id");
+      console.log(id);
+      console.log(btnConfirm)
+      btnConfirm.onclick = function () {
+        formDelete.action = "/admin/" + id + "/detroy?_method=DELETE";
+        formDelete.submit();
+      };
+    });
+  });
+
+</script>
