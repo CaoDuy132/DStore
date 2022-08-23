@@ -31,6 +31,11 @@
     <input type="file" id="customFile" name="image" class="form-control">
   </div>
   <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="customFile">Quyền</label>
+    <input type="text" value="{{user.role}}" name="role" class="form-control" required="true"
+      placeholder="Phân quyền" />
+  </div>
+  <div class="form-outline mb-4">
     <label class="form-label font-weight-bold" for="customFile">Địa chỉ(*)</label>
     <input type="text" value="{{user.address}}" name="address" class="form-control" required="true"
       placeholder="Nhập địa chỉ" />

@@ -11,24 +11,13 @@ class AuthController {
     }
 
     //[POST] /admin/register/store
-    encodeToken(userID) {
-        return jwt.sign(
-            {
-                iss: 'Cao Duy',
-                sub: userID,
-                iat: new Date().getTime(),
-                exp: new Date().setDate(new Date().getDate() + 3),
-            },
-            ACCESS_SECRET_TOKEN,
-        );
-    }
     createToken(user) {
         const id = user._id;
         return jwt.sign(
-            { id: user._id, role: user.role },
+            { id, role: user.role },
             ACCESS_SECRET_TOKEN,
             {
-                expiresIn: new Date().setDate(new Date().getDate() + 3),
+                expiresIn: '2h',
             },
         );
     }

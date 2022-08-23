@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const AdminController = require('../app/controllers/AdminController');
-const AuthController = require('../app/controllers/AuthController');
+const AuthMiddleware = require('../app/middlewares/AuthMiddleware');
 const { upload } = require('../app/middlewares/UploadMiddleware');
 //Admin/User
 router.post('/user/check-user-action', AdminController.checkUserAction);
 router.get('/user/list', AdminController.getListUser);
 router.post('/user/store', upload.single('image'), AdminController.storeUser);
-router.delete('/user/:id/delete', AdminController.deleteUser);
+router.delete('/user/:id/delete',AuthMiddleware.verifyAdmin, AdminController.deleteUser);
 router.get('/user/trash', AdminController.getListTrashUser);
 router.patch('/user/:id/restore', AdminController.restoreUser);
-router.delete('/user/:id/detroy', AdminController.detroyUser);
+router.delete('/user/:id/detroy',AuthMiddleware.verifyAdmin, AdminController.detroyUser);
 router.get('/user/create', AdminController.createUser);
-router.get('/user/:id/edit', AdminController.editUser);
+router.get('/user/:id/edit',AuthMiddleware.verifyAdmin,AdminController.editUser);
 router.put(
     '/user/:id/update',
     upload.single('image'),

@@ -2,20 +2,35 @@ const jwt = require('jsonwebtoken');
 const { ACCESS_SECRET_TOKEN } = require('../../config/envConfig');
 const { User } = require('../models/Model');
 
-const AuthMiddleware = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, ACCESS_SECRET_TOKEN, (err, decodeToken) => {
-            if (err) {
-                console.log(err.massage);
-                res.redirect('/login');
-            } else {
-                res.currentUserId = decodeToken.id;
+class AuthMiddleware{
+    verifyToken(req, res, next){
+        const token = req.cookies.jwt;
+        if (token) {
+            jwt.verify(token, ACCESS_SECRET_TOKEN, (err, user) => {
+                if (err) {
+                    console.log('Token is not valid');
+                    res.redirect('/login');
+                } else {
+                    res.currentUserId = user.id;
+                    req.user = user;
+                    next();
+                }
+            });
+        } else {
+            res.redirect('/login');
+        }
+    };
+    verifyAdmin(req,res,next){
+        const verified = new AuthMiddleware();
+        verified.verifyToken(req,res,()=>{
+            if(req.user.id == req.params.id || req.user.role == 'Admin'){
                 next();
+            }else{
+                res.status(403).json('Không được xóa người dùng này');
             }
         });
-    } else {
-        res.redirect('/login');
     }
-};
-module.exports = { AuthMiddleware };
+    
+}
+
+module.exports = new AuthMiddleware();
