@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const slug = require('mongoose-slug-generator');
 const mongooseDelete = require('mongoose-delete');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { mongooseToObject } = require('../../util/mongoose');
 const Schema = mongoose.Schema;
 options = {
     separator: '',
@@ -31,10 +34,15 @@ const ProductSchema = new Schema(
             type: String,
             required: true,
         },
+        standOut: { type: Boolean, default: true },
         slug: {
             type: String,
             slug: 'name',
             unique: true,
+        },
+        userID: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
         },
     },
     { timestamps: true, _id: false },
@@ -50,7 +58,12 @@ const UserSchema = new Schema(
         address: { type: String, trim: true },
         verificationToken: { type: String },
         image: { type: String, default: 'avatar.jpg' },
-        isVerified: { type: Boolean, default: false },
+        productID: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+        ],
         tokens: [
             {
                 token: { type: String, required: true },

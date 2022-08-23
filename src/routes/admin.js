@@ -2,14 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AdminController = require('../app/controllers/AdminController');
 const AuthController = require('../app/controllers/AuthController');
-const { AuthMiddleware } = require('../app/middlewares/AuthMiddleware');
 const { upload } = require('../app/middlewares/UploadMiddleware');
-//Auth
-router.get('/register', AdminController.getRegisterForm);
-router.get('/login', AdminController.getloginForm);
-router.post('/login/store', AdminController.loginStore);
-router.post('/register/store', AdminController.registerStore);
-router.get('/logout', AuthController.logout, AdminController.registerStore);
 //Admin/User
 router.post('/user/check-user-action', AdminController.checkUserAction);
 router.get('/user/list', AdminController.getListUser);
@@ -27,9 +20,9 @@ router.put(
 );
 //admin/
 router.get('/create', AdminController.createProduct);
-router.get('/list', AuthMiddleware, AdminController.getListProduct);
+router.get('/list', AdminController.getListProduct);
 router.get('/trash', AdminController.trashProduct);
-router.get('/profile', AuthMiddleware, AdminController.getProfile);
+router.get('/profile', AdminController.getProfile);
 router.post('/store', upload.single('image'), AdminController.storeProduct);
 router.post('/check-product-action', AdminController.checkProductAction);
 router.get('/:id/edit', AdminController.editProduct);
@@ -42,5 +35,5 @@ router.delete('/:id/delete', AdminController.deleteProduct);
 router.delete('/:id/detroy', AdminController.detroyProduct);
 router.patch('/:id/restore', AdminController.restoreProduct);
 router.get('/:slug', AdminController.getListProduct);
-router.get('/', AuthMiddleware, AdminController.getListProduct);
+router.get('/', AdminController.getListProduct);
 module.exports = router;

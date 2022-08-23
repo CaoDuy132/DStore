@@ -1,7 +1,7 @@
 const res = require('express/lib/response');
-const Product = require('../models/Product');
+const { Product, User } = require('../models/Model');
 const { ACCESS_SECRET_TOKEN } = require('../../config/envConfig');
-const User = require('../models/User');
+// const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -10,92 +10,6 @@ const {
     mongooseToObject,
 } = require('../../util/mongoose');
 class AdminController {
-    //[GET] /admin/register
-    getRegisterForm(req, res, next) {
-        res.render('log/register', { layout: false });
-    }
-
-    //[POST] /admin/register/store
-    encodeToken(userID) {
-        return jwt.sign(
-            {
-                iss: 'Cao Duy',
-                sub: userID,
-                iat: new Date().getTime(),
-                exp: new Date().setDate(new Date().getDate() + 3),
-            },
-            ACCESS_SECRET_TOKEN,
-        );
-    }
-    createToken(id) {
-        return jwt.sign({ id }, ACCESS_SECRET_TOKEN, {
-            expiresIn: new Date().setDate(new Date().getDate() + 3),
-        });
-    }
-    registerStore(req, res, next) {
-        const { fullname, phone, email, password } = req.body;
-        User.findOne({ email })
-            .then((user) => {
-                let foundUser = mongooseToObject(user);
-                if (foundUser) {
-                    return res.json({ msg: 'Email đã tồn tại ', foundUser });
-                }
-                const newUser = new User({
-                    fullname,
-                    phone,
-                    email,
-                    password,
-                });
-
-                let UserToken = new AdminController();
-                const token = UserToken.createToken(newUser._id);
-                res.cookie('jwt', token, { httpOnly: true });
-                newUser.save();
-                res.redirect('/admin/login');
-            })
-            .catch(next);
-    }
-    getloginForm(req, res, next) {
-        res.render('log/login', { title: 'Admin | login', layout: false });
-    }
-    loginStore(req, res, next) {
-        const { email, password } = req.body;
-
-        const user = User.findOne({ email })
-            .then((user) => {
-                const foundUser = mongooseToObject(user);
-
-                if (foundUser) {
-                    bcrypt
-                        .compare(password, foundUser.password)
-                        .then((data) => {
-                            if (data) {
-                                let UserToken = new AdminController();
-                                const token = UserToken.createToken(
-                                    foundUser._id,
-                                );
-                                res.cookie('jwt', token, { httpOnly: true });
-                                res.redirect('/admin/list');
-                            } else {
-                                return res.json({
-                                    success: false,
-                                    massage: 'Mật khẩu không đúng',
-                                });
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                } else {
-                    res.json({
-                        success: false,
-                        massage: 'Email không tồn tại',
-                    });
-                }
-            })
-            .catch(next);
-    }
-
     getProfile(req, res, next) {
         let currenUserId = res.currentUserId;
         if (!currenUserId) {
@@ -294,9 +208,11 @@ class AdminController {
     }
     //[POST] /admin/:id/update
     updateProduct(req, res, next) {
-        const formData = req.file.filename;
-        const image = formData;
-        res.json(image);
+        if (req.file) {
+            const formData = req.file.filename;
+            req.body.image = formData;
+        }
+        console.log(req.body);
         Product.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/list'))
             .catch(next);

@@ -40,6 +40,7 @@
                   {{{sortable 'price' sort}}}
                 </th>
                 <th scope="col">Ảnh</th>
+                <th scope="col">Hiển thị</th>
                 <th scope="col">Thao tác
                 </th>
 
@@ -58,8 +59,8 @@
                   <td class="cell">{{this.price}}</td>
 
                   <td class="cell"><img class="list-img-admin" src="/images/{{this.image}}" alt="{{this.image}}"></td>
-
-                  <td class="td_action">
+                  <td class="cell">{{this.standOut}}</td>
+                  <td class="cell">
                     <a class="btn btn-outline-info" href="{{this._id}}/edit">
                       <i class="fa-solid fa-marker"></i>
                       Sửa

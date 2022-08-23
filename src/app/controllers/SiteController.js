@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+const { Product } = require('../models/Model');
 const {
     multipleMongooseToObject,
     mongooseToObject,
@@ -7,14 +7,14 @@ const {
 class SiteController {
     //[GET]/news
     index(req, res, next) {
-        Product.find({}).limit(8)
+        Product.find({})
+            .limit(8)
             .then((products) => {
                 res.render('home', {
                     title: 'Trang chủ',
                     products: multipleMongooseToObject(products),
                 });
             })
-
             .catch(next);
     }
     //[GET]/news/:slug
