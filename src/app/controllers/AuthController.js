@@ -9,18 +9,19 @@ class AuthController {
     getRegisterForm(req, res, next) {
         res.render('log/register', { layout: false });
     }
-
-    //[POST] /admin/register/store
-    createToken(user) {
+    createAccessToken(user) {
         const id = user._id;
-        return jwt.sign(
-            { id, role: user.role },
-            ACCESS_SECRET_TOKEN,
-            {
-                expiresIn: '2h',
-            },
-        );
+        return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
+            expiresIn: '2h',
+        });
     }
+    createRefreshToken(user) {
+        const id = user._id;
+        return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
+            expiresIn: '365d',
+        });
+    }
+    //[POST] /admin/register/store
     registerStore(req, res, next) {
         const { fullname, phone, email, password } = req.body;
         User.findOne({ email })
@@ -36,8 +37,13 @@ class AuthController {
                     password,
                 });
                 let UserToken = new AuthController();
-                const token = UserToken.createToken(newUser._id);
-                res.cookie('jwt', token, { httpOnly: true });
+                const token = UserToken.createAccessToken(newUser._id);
+                res.cookie('jwt', token, {
+                    httpOnly: true,
+                    secure: false,
+                    path: '/',
+                    sameSite: 'strict',
+                });
                 newUser.save();
                 res.redirect('/login');
             })
@@ -60,7 +66,10 @@ class AuthController {
                         .then((data) => {
                             if (data) {
                                 let UserToken = new AuthController();
-                                const token = UserToken.createToken(foundUser);
+                                const token =
+                                    UserToken.createAccessToken(foundUser);
+                                const refreshToken =
+                                    UserToken.createRefreshToken(foundUser);
                                 res.cookie('jwt', token, { httpOnly: true });
                                 res.redirect('/admin/list');
                             } else {

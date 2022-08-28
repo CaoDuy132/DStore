@@ -30,11 +30,20 @@
     </div>
     <input type="file" id="customFile" name="image" class="form-control">
   </div>
+  {{#if isAdmin}}
   <div class="form-outline mb-4">
     <label class="form-label font-weight-bold" for="customFile">Quyền</label>
     <input type="text" value="{{user.role}}" name="role" class="form-control" required="true"
       placeholder="Phân quyền" />
   </div>
+  {{else}}
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="customFile">Quyền</label>
+    <input type="text" value="{{user.role}}" name="role" class="form-control" readonly="true" required="true"
+      placeholder="Phân quyền" />
+  </div>
+  {{/if}}
+
   <div class="form-outline mb-4">
     <label class="form-label font-weight-bold" for="customFile">Địa chỉ(*)</label>
     <input type="text" value="{{user.address}}" name="address" class="form-control" required="true"

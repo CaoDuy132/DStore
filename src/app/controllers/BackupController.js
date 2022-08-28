@@ -4,8 +4,8 @@ const {
     multipleMongooseToObject,
     mongooseToObject,
 } = require('../../util/mongoose');
-const AdminController = {
-    getProfile: (req, res, next) => {
+class AdminController {
+    getProfile(req, res, next) {
         let currenUserId = res.currentUserId;
         if (!currenUserId) {
             res.redirect('/admin/login');
@@ -19,8 +19,8 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
-    getListUser: (req, res, next) => {
+    }
+    getListUser(req, res, next) {
         let sort = res.locals;
         let userQuery = User.find({});
         if (req.query.hasOwnProperty('sort')) {
@@ -39,18 +39,18 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
-    createUser: (req, res, next) => {
+    }
+    createUser(req, res, next) {
         res.render('admin/user/create', { layout: 'admin' });
-    },
+    }
     // /[DELETE] /admin/:id/delete
-    deleteUser: (req, res, next) => {
+    deleteUser(req, res, next) {
         User.delete({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
     //[GET] /admin/: id/edit
-    editUser: (req, res, next) => {
+    editUser(req, res, next) {
         User.findById(req.params.id)
 
             .then((user) => {
@@ -65,9 +65,9 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
+    }
     //[POST] /admin/:id/update
-    updateUser: (req, res, next) => {
+    updateUser(req, res, next) {
         if (req.file) {
             const formData = req.file.filename;
             req.body.image = formData;
@@ -75,9 +75,9 @@ const AdminController = {
         User.updateMany({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/user/list'))
             .catch(next);
-    },
+    }
     // /[POST] /admin/check-user-action/
-    checkUserAction: (req, res, next) => {
+    checkUserAction(req, res, next) {
         switch (req.body.action) {
             case 'delete': {
                 User.delete({ _id: req.body.checkIDs })
@@ -100,9 +100,9 @@ const AdminController = {
             default:
                 res.send('Lựa chọn không hợp lệ');
         }
-    },
+    }
     // /[GET] /admin/user/trash
-    getListTrashUser: (req, res, next) => {
+    getListTrashUser(req, res, next) {
         User.findDeleted({})
             .then((users) => {
                 res.render('admin/user/trash-user', {
@@ -112,9 +112,9 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
+    }
     //[POST] /admin/user/store
-    storeUser: (req, res, next) => {
+    storeUser(req, res, next) {
         const formData = req.file.filename;
         const image = formData;
         const { fullname, email, password, phone, address } = req.body;
@@ -129,22 +129,22 @@ const AdminController = {
         user.save()
             .then(() => res.redirect('/admin/user/list'))
             .catch(next);
-    },
+    }
     // /[PATCH] /admin/user:id/restore
-    restoreUser: (req, res, next) => {
+    restoreUser(req, res, next) {
         User.restore({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
     // /[PATCH] /admin/user/:id/detroy
-    detroyUser: (req, res, next) => {
+    detroyUser(req, res, next) {
         User.deleteOne({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
 
     //[GET] admin/list
-    getListProduct: (req, res, next) => {
+    getListProduct(req, res, next) {
         let currenUserId = res.currentUserId;
         let currentUser = User.findById({ _id: currenUserId });
         let sort = res.locals;
@@ -170,16 +170,16 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
+    }
     //[GET] /admin/create
     createProduct(req, res) {
         res.render('admin/product/create', {
             title: 'Admin | Create',
             layout: 'admin',
         });
-    },
+    }
     //[GET] /admin/: id/edit
-    editProduct: (req, res, next) => {
+    editProduct(req, res, next) {
         Product.findById(req.params.id)
 
             .then((product) => {
@@ -190,9 +190,9 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
+    }
     //[POST] /admin/store
-    storeProduct: (req, res, next) => {
+    storeProduct(req, res, next) {
         const formData = req.file.filename;
         const image = formData;
         const { name, price, description } = req.body;
@@ -201,9 +201,9 @@ const AdminController = {
             .save()
             .then(() => res.redirect('/admin/list'))
             .catch(next);
-    },
+    }
     //[POST] /admin/:id/update
-    updateProduct: (req, res, next) => {
+    updateProduct(req, res, next) {
         if (req.file) {
             const formData = req.file.filename;
             req.body.image = formData;
@@ -212,15 +212,15 @@ const AdminController = {
         Product.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/list'))
             .catch(next);
-    },
+    }
     // /[DELETE] /admin/:id/delete
-    deleteProduct: (req, res, next) => {
+    deleteProduct(req, res, next) {
         Product.delete({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
     // /[GET] /admin/trash
-    trashProduct: (req, res, next) => {
+    trashProduct(req, res, next) {
         Product.findDeleted({})
             .then((products) => {
                 res.render('admin/product/trash-product', {
@@ -230,22 +230,22 @@ const AdminController = {
                 });
             })
             .catch(next);
-    },
+    }
     // /[PATCH] /admin/:id/restore
-    restoreProduct: (req, res, next) => {
+    restoreProduct(req, res, next) {
         Product.restore({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
     // /[PATCH] /admin/:id/detroy
-    detroyProduct: (req, res, next) => {
+    detroyProduct(req, res, next) {
         Product.deleteOne({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
-    },
+    }
 
     // /[POST] /admin/check-action/
-    checkProductAction: (req, res, next) => {
+    checkProductAction(req, res, next) {
         switch (req.body.action) {
             case 'delete': {
                 Product.delete({ _id: req.body.checkIDs })
@@ -268,6 +268,6 @@ const AdminController = {
             default:
                 res.send('Lựa chọn không hợp lệ');
         }
-    },
-};
-module.exports = AdminController;
+    }
+}
+module.exports = new AdminController();
