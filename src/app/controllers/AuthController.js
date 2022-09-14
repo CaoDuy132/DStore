@@ -2,7 +2,7 @@ const res = require('express/lib/response');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { mongooseToObject } = require('../../util/mongoose');
-const { ACCESS_SECRET_TOKEN } = require('../../config/envConfig');
+const {ACCESS_SECRET_TOKEN} = process.env
 const { User } = require('../models/Model');
 class AuthController {
     //[GET] /admin/register
@@ -12,7 +12,7 @@ class AuthController {
     createAccessToken(user) {
         const id = user._id;
         return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
-            expiresIn: '2h',
+            expiresIn: '2d',
         });
     }
     createRefreshToken(user) {
@@ -57,7 +57,7 @@ class AuthController {
     loginStore(req, res, next) {
         const { email, password } = req.body;
 
-        const user = User.findOne({ email })
+            User.findOne({ email })
             .then((user) => {
                 const foundUser = mongooseToObject(user);
                 if (foundUser) {
@@ -67,9 +67,7 @@ class AuthController {
                             if (data) {
                                 let UserToken = new AuthController();
                                 const token =
-                                    UserToken.createAccessToken(foundUser);
-                                const refreshToken =
-                                    UserToken.createRefreshToken(foundUser);
+                                UserToken.createAccessToken(foundUser);
                                 res.cookie('jwt', token, { httpOnly: true });
                                 res.redirect('/admin/list');
                             } else {

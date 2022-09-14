@@ -8,7 +8,8 @@ const AdminController = {
     getProfile: (req, res, next) => {
         let currenUserId = res.currentUserId;
         if (!currenUserId) {
-            res.redirect('/admin/login');
+            currenUserId= '62fb7148b1a0aa8d80ee72cd'
+            // res.redirect('/admin/login');
         }
         User.findById({ _id: currenUserId })
             .then((user) => {
@@ -56,7 +57,6 @@ const AdminController = {
             .then((user) => {
                 var isAdmin =
                     req.user.role.toLowerCase() === 'admin' ? true : false;
-                console.log(isAdmin);
                 res.render('admin/user/edit', {
                     title: 'Admin | Edit',
                     user: mongooseToObject(user),
@@ -145,7 +145,17 @@ const AdminController = {
 
     //[GET] admin/list
     getListProduct: (req, res, next) => {
+        const page = req.query.page;
+        console.log(page);
+        if(page){
+            
+        }else{
+            //get all data
+        }
         let currenUserId = res.currentUserId;
+        if(!currenUserId){
+            currenUserId='62fb7148b1a0aa8d80ee72cd'
+        }
         let currentUser = User.findById({ _id: currenUserId });
         let sort = res.locals;
         let productQuery = Product.find({});
@@ -208,7 +218,6 @@ const AdminController = {
             const formData = req.file.filename;
             req.body.image = formData;
         }
-        console.log(req.body);
         Product.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/list'))
             .catch(next);

@@ -29,6 +29,7 @@
             </form>
         </div>
         <div class="form-container sign-in-container">
+
             <form method="POST" id="form-login" action="/login/store">
                 <h1>Đăng nhập</h1>
                 <div class="social-container">
@@ -37,8 +38,8 @@
                     <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>Sử dụng tài khoản của bạn</span>
-                <input type="email" name="email" placeholder="Email" />
-                <input type="password" name="password" placeholder="Mật khẩu" />
+                <input type="email" id="email" name="email" placeholder="Email" />
+                <input type="password" id="password" name="password" placeholder="Mật khẩu" />
                 <a href="#">Quên mật khẩu?</a>
                 <button class="btn-signIn" id="btn-login">Đăng nhập</button>
             </form>
@@ -59,8 +60,9 @@
             </div>
         </div>
     </div>
-
+    <script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
     <script src="/js/log.js"> </script>
+
 </body>
 
 </html>

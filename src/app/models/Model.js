@@ -117,7 +117,6 @@ UserSchema.methods.hashPassword = async function (password) {
         const salt = await bcrypt.genSalt(10);
         //Generate a password hash (salt + hash)
         password = await bcrypt.hash(password, salt);
-        console.log('password la', password);
         return password;
     } catch (err) {
         next(err);

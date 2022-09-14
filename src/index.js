@@ -2,19 +2,19 @@ const express = require('express');
 require('dotenv').config();
 const path = require('path');
 const app = express();
-const port = 8080;
+const {PORT,ACCESS_SECRET_TOKEN} = process.env;
+const session = require('express-session');
 const route = require('./routes');
 const db = require('./config/db');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 //method override restAPI
 var methodOverride = require('method-override');
 //connect Middleware
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 //connect db to expressdb
-const hbsHelpers = require('./helpers/index')
-console.log(hbsHelpers)
+const passport =require('passport');
 db.connect();
-app.use(cookieParser());
+// app.use(cookieParser());
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({
     extname: '.hbs',
@@ -53,6 +53,16 @@ const hbs = exphbs.create({
    
 
 });
+const store = session.MemoryStore()
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 },
+    store
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.use(express.urlencoded({ extended: true }));
@@ -67,6 +77,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 //HTTP logger
 // app.use(morgan('combined'));
 route(app);
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Example app listening at http://localhost:${PORT}`);
 });

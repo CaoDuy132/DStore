@@ -56,7 +56,6 @@ class AdminController {
             .then((user) => {
                 var isAdmin =
                     req.user.role.toLowerCase() === 'admin' ? true : false;
-                console.log(isAdmin);
                 res.render('admin/user/edit', {
                     title: 'Admin | Edit',
                     user: mongooseToObject(user),
@@ -208,7 +207,6 @@ class AdminController {
             const formData = req.file.filename;
             req.body.image = formData;
         }
-        console.log(req.body);
         Product.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/list'))
             .catch(next);
