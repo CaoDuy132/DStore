@@ -42,6 +42,14 @@ router.put(
     upload.single('image'),
     AdminController.updateUser,
 );
+//admin/categogies
+router.get('/categogy/create', AdminController.createProduct);
+router.get('/categogy/list', AdminController.getListcategogy);
+router.get(
+    '/categogy/trash',
+    AuthMiddleware.verifyAdmin,
+    AdminController.trashProduct,
+);
 //admin/
 router.get(
     '/create',

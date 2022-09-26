@@ -1,34 +1,53 @@
-const { Product } = require('../models/Model');
+const Product = require('../models/Product');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const {ACCESS_SECRET_TOKEN} = process.env || 'YOUR_ACCESS_SECRET_TOKEN';
 const {
     multipleMongooseToObject,
     mongooseToObject,
 } = require('../../util/mongoose');
-
-class SiteController {
+ const SiteController={
     //[GET]/news
-    index(req, res, next) {
-        Product.find({})
-            .limit(8)
-            .then((products) => {
-                res.render('home', {
-                    title: 'Trang chủ',
-                    products: multipleMongooseToObject(products),
-                });
-            })
-            .catch(next);
+    index: async (req, res, next)=>{
+       const products = await Product.find({});
+       const token = req.cookies.jwt;
+       if (token) {
+        jwt.verify(token, ACCESS_SECRET_TOKEN, (err, user) => {
+            if (user) {
+                res.currentUserId = user.id;
+                req.user = user;
+            }else{
+                req.user =null;
+            }
+        });
     }
+    let currentUser = null;
+       if(req.user){
+             currentUser = await User.findById(req.user.id) 
+        }
+            try{
+                res.render('shop/home',{
+                    products: multipleMongooseToObject(products),
+                    title: 'Trang chủ',
+                    currentUser: mongooseToObject(currentUser)
+                })
+            }catch(err){
+                next(err)
+            }
+    },
     //[GET]/news/:slug
-    productDetail(req, res, next) {
+    productDetail: (req, res, next)=>{
+       
         Product.findOne({ slug: req.params.slug })
             .then((product) => {
-                res.render('product-detail', {
+                res.render('shop/product-detail', {
                     product: mongooseToObject(product),
                 });
             })
             .catch(next);
-    }
-    show(req, res) {
+    },
+    show: (req, res)=>{
         res.send('Index slug page');
     }
 }
-module.exports = new SiteController();
+module.exports = SiteController;

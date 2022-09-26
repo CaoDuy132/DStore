@@ -1,0 +1,38 @@
+<h1 class="app-page-title text-center">Thêm sản phẩm</h1>
+<form method="post" action="/admin/store" enctype="multipart/form-data" class="w-50 mx-auto">
+
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example1">Tên(*)</label>
+    <input type="text" id="form4Example1" name="name" class="form-control" placeholder="Nhập tên sản phẩm"
+      required="true" />
+  </div>
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example2">Giá(*)</label>
+    <input type="text" id="form4Example2" name="price" class="form-control" placeholder="Nhập giá cho sản phẩm"
+      required="true" />
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="customFile">Thêm hình ảnh cho sản phẩm(*)</label>
+    <input type="file" id="customFile" name="image" class="form-control" required="true" />
+  </div>
+
+
+
+  <!-- Message input -->
+  <div class="form-outline mb-4">
+    <label class="form-label font-weight-bold" for="form4Example3">Mô tả (*)</label>
+    <textarea class="form-control" name="description" id="form4Example3" rows="4" placeholder="Nhập mô tả cho sản phẩm"
+      required="true"></textarea>
+  </div>
+
+  <!-- Checkbox -->
+
+  </div>
+
+  <!-- Submit button -->
+  <div class="col-6 col-lg-6 mx-auto">
+    <button type="submit" class="btn btn-success btn-block mb-4">Thêm mới</button>
+  </div>
+</form>

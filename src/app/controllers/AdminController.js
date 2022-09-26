@@ -1,5 +1,7 @@
 const res = require('express/lib/response');
-const { Product, User } = require('../models/Model');
+// const {Product,User,Categogy} = require('../models/Model');
+var Product = require('../models/Product');
+var User = require('../models/User');
 const {
     multipleMongooseToObject,
     mongooseToObject,
@@ -8,7 +10,7 @@ const AdminController = {
     getProfile: (req, res, next) => {
         let currenUserId = res.currentUserId;
         if (!currenUserId) {
-            currenUserId= '62fb7148b1a0aa8d80ee72cd'
+            currenUserId = '62fb7148b1a0aa8d80ee72cd';
             // res.redirect('/admin/login');
         }
         User.findById({ _id: currenUserId })
@@ -56,7 +58,7 @@ const AdminController = {
 
             .then((user) => {
                 var isAdmin =
-                    req.user.role.toLowerCase() === 'admin' ? true : false;
+                    req.user.role >=1 ? true : false;
                 res.render('admin/user/edit', {
                     title: 'Admin | Edit',
                     user: mongooseToObject(user),
@@ -142,23 +144,43 @@ const AdminController = {
             .then(() => res.redirect('back'))
             .catch(next);
     },
-
+    //[GET] admin/categogy/list
+    getListcategogy: (req, res, next) => {
+        let sort = res.locals;
+        let categoriesQuery = Categogy.find({});
+        if (req.query.hasOwnProperty('sort')) {
+            categoriesQuery = categoriesQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+        Promise.all([categoriesQuery, Product.countDocumentsDeleted()])
+            .then(([categories, deletedCount]) => {
+                res.render('admin/categogy/list', {
+                    title: 'Admin | List',
+                    deletedCount,
+                    sort,
+                    categories: multipleMongooseToObject(categories),
+                    layout: 'admin',
+                });
+            })
+            .catch(next);
+    },
     //[GET] admin/list
     getListProduct: (req, res, next) => {
-        const page = req.query.page;
-        console.log(page);
-        if(page){
-            
-        }else{
-            //get all data
-        }
+        var page = req.query.page;
         let currenUserId = res.currentUserId;
-        if(!currenUserId){
-            currenUserId='62fb7148b1a0aa8d80ee72cd'
+        if (!currenUserId) {
+            currenUserId = '62fb7148b1a0aa8d80ee72cd';
         }
         let currentUser = User.findById({ _id: currenUserId });
         let sort = res.locals;
-        let productQuery = Product.find({});
+        const PAGE_SIZE = 5;
+        var productQuery = Product.find({});
+        if (page) {
+            productQuery = Product.find({})
+                .skip(PAGE_SIZE * parseInt(page) - PAGE_SIZE)
+                .limit(PAGE_SIZE);
+        }
         if (req.query.hasOwnProperty('sort')) {
             productQuery = productQuery.sort({
                 [req.query.column]: req.query.type,
@@ -166,12 +188,14 @@ const AdminController = {
         }
         Promise.all([
             productQuery,
+            Product.countDocuments(),
             Product.countDocumentsDeleted(),
             currentUser,
         ])
-            .then(([products, deletedCount, currentUser]) => {
+            .then(([products, pageCount, deletedCount, currentUser]) => {
                 res.render('admin/product/list', {
                     title: 'Admin | List',
+                    pageCount,
                     deletedCount,
                     sort,
                     products: multipleMongooseToObject(products),
@@ -190,8 +214,8 @@ const AdminController = {
     },
     //[GET] /admin/: id/edit
     editProduct: (req, res, next) => {
-        Product.findById(req.params.id)
-
+        
+        Product.findOne({_id: req.params.id})
             .then((product) => {
                 res.render('admin/product/edit', {
                     title: 'Admin | Edit',

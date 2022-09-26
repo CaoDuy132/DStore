@@ -2,17 +2,16 @@ const res = require('express/lib/response');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { mongooseToObject } = require('../../util/mongoose');
-const {ACCESS_SECRET_TOKEN} = process.env
-const { User } = require('../models/Model');
+const { ACCESS_SECRET_TOKEN } = process.env;
+const User = require('../models/User');
 class AuthController {
-    //[GET] /admin/register
     getRegisterForm(req, res, next) {
         res.render('log/register', { layout: false });
     }
     createAccessToken(user) {
         const id = user._id;
         return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
-            expiresIn: '2d',
+            expiresIn: '24h',
         });
     }
     createRefreshToken(user) {
@@ -24,6 +23,7 @@ class AuthController {
     //[POST] /admin/register/store
     registerStore(req, res, next) {
         const { fullname, phone, email, password } = req.body;
+        console.log(req.body);
         User.findOne({ email })
             .then((user) => {
                 let foundUser = mongooseToObject(user);
@@ -56,24 +56,33 @@ class AuthController {
     }
     loginStore(req, res, next) {
         const { email, password } = req.body;
-
-            User.findOne({ email })
+        console.log(email,password)
+        User.findOne({ email })
             .then((user) => {
                 const foundUser = mongooseToObject(user);
                 if (foundUser) {
                     bcrypt
-                        .compare(password, foundUser.password)
+                        .compare(password,foundUser.password)
                         .then((data) => {
+                            console.log(data)
                             if (data) {
                                 let UserToken = new AuthController();
                                 const token =
                                 UserToken.createAccessToken(foundUser);
-                                res.cookie('jwt', token, { httpOnly: true });
-                                res.redirect('/admin/list');
+                                res.setHeader('Authorization', token);
+                                res.cookie('jwt', token, {
+                                    httpOnly: true,
+                                    secure: false,
+                                    path: '/',
+                                    sameSite: 'strict',
+                                });
+                                //
+                                return res.redirect('/');
+                                //
                             } else {
-                                return res.json({
+                                return res.status(400).json({
                                     success: false,
-                                    massage: 'Mật khẩu không đúng',
+                                    message: 'Mật khẩu không đúng',
                                 });
                             }
                         })
@@ -81,7 +90,7 @@ class AuthController {
                             console.log(error);
                         });
                 } else {
-                    res.json({
+                    res.status(400).json({
                         success: false,
                         massage: 'Email không tồn tại',
                     });

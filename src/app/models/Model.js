@@ -34,6 +34,9 @@ const ProductSchema = new Schema(
             type: String,
             required: true,
         },
+        catelogies: {
+            type: String,
+        },
         standOut: { type: Boolean, default: true },
         slug: {
             type: String,
@@ -47,6 +50,9 @@ const ProductSchema = new Schema(
     },
     { timestamps: true, _id: false },
 );
+const CategogySchema = new Schema({
+    name: { type: String, require, trim: true },
+});
 const UserSchema = new Schema(
     {
         fullname: { type: String, trim: true },
@@ -135,5 +141,7 @@ mongoose.plugin(slug);
 // plugin autoIncrement id
 ProductSchema.plugin(AutoIncrement);
 let Product = mongoose.model('Product', ProductSchema);
+let Categories = mongoose.model('Categories', CategogySchema);
 let User = mongoose.model('User', UserSchema);
-module.exports = { Product, User };
+let Cart = mongoose.model('Cart', CartShema);
+module.exports = { Product, User, Cart, Categories };
