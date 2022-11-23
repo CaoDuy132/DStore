@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const SiteController = require('../app/controllers/SiteController')
 const AuthController = require('../app/controllers/AuthController');
-const AuthMiddleware = require('../app/middlewares/AuthMiddleware');
 const res = require('express/lib/response');
 const jwt = require('jsonwebtoken');
-// const _ = require('lodash');
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
@@ -31,18 +29,19 @@ passport.use(
         },
     ),
 );
-router.get('/register', AuthController.getRegisterForm);
+// Auth
 router.get('/login', AuthController.getloginForm);
 router.post('/login/store', AuthController.loginStore);
-router.get(
-    '/secret',
+router.get('/register', AuthController.getRegisterForm);
+router.post('/register/store', AuthController.registerStore);
+router.get('/logout', AuthController.logout);
+router.get('/secret',
     passport.authenticate('jwt', { session: false }),
     function (req, res, next) {
         return res.json('Login successfully');
     },
 );
-router.post('/register/store', AuthController.registerStore);
-router.get('/logout', AuthController.logout);
+///////////////////////////////////////////////////
 router.get('/:slug', SiteController.productDetail);
 router.get('/',SiteController.index);
 module.exports = router;

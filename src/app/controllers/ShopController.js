@@ -3,6 +3,7 @@ const User = require('../models/User');
 const {multipleMongooseToObject} = require('../../util/mongoose')
 const CartController = {
     addToCart: async (req, res, next) => {
+        console.log('current User',req.user)
         try{
             const currentUser = await User.findById(req.user.id)
             currentUser.addToCart(req.body.id);

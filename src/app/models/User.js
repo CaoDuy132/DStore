@@ -60,7 +60,7 @@ UserSchema.pre('save', async function hashPassword(next) {
 UserSchema.methods.hashPassword = async function (password) {
     try {
         const salt = await bcrypt.genSalt(10);
-        password = await bcrypt.hash(password, salt);
+        const password = await bcrypt.hash(password, salt);
         return password;
     } catch (err) {
         next(err);

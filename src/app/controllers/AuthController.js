@@ -6,29 +6,31 @@ const { ACCESS_SECRET_TOKEN } = process.env;
 const User = require('../models/User');
 class AuthController {
     getRegisterForm(req, res, next) {
-        res.render('log/register', { layout: false });
+        res.render('shop/register', { layout: false });
     }
     createAccessToken(user) {
         const id = user._id;
-        return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
-            expiresIn: '24h',
+        return jwt.sign({id}, ACCESS_SECRET_TOKEN, {
+            expiresIn: '2d',
         });
     }
     createRefreshToken(user) {
         const id = user._id;
-        return jwt.sign({ id, role: user.role }, ACCESS_SECRET_TOKEN, {
+        return jwt.sign({id}, ACCESS_SECRET_TOKEN, {
             expiresIn: '365d',
         });
     }
     //[POST] /admin/register/store
     registerStore(req, res, next) {
         const { fullname, phone, email, password } = req.body;
-        console.log(req.body);
         User.findOne({ email })
             .then((user) => {
                 let foundUser = mongooseToObject(user);
                 if (foundUser) {
-                    return res.json({ msg: 'Email đã tồn tại ', foundUser });
+                    return res.json({
+                        success: false,
+                         msg: 'Email already exists',
+                        });
                 }
                 const newUser = new User({
                     fullname,
@@ -36,53 +38,44 @@ class AuthController {
                     email,
                     password,
                 });
-                let UserToken = new AuthController();
-                const token = UserToken.createAccessToken(newUser._id);
-                res.cookie('jwt', token, {
-                    httpOnly: true,
-                    secure: false,
-                    path: '/',
-                    sameSite: 'strict',
-                });
                 newUser.save();
-                res.redirect('/login');
+                return res.json({
+                    success: true,
+                    message: 'Register successfully'
+                });
             })
-            .catch((next) => {
-                res.status(500).json(next);
+            .catch((err) => {
+               console.log('err: ',err);
             });
     }
     getloginForm(req, res, next) {
-        res.render('log/login', { title: 'Admin | login', layout: false });
+        res.render('shop/login', { title: 'Admin | login', layout: false });
+    }
+    getAdminForm(req,res,next){
+        res.render('admin/user/login', { title: 'Admin | login', layout: false });
     }
     loginStore(req, res, next) {
         const { email, password } = req.body;
-        console.log(email,password)
         User.findOne({ email })
-            .then((user) => {
-                const foundUser = mongooseToObject(user);
+            .then((foundUser) => {
                 if (foundUser) {
                     bcrypt
                         .compare(password,foundUser.password)
                         .then((data) => {
-                            console.log(data)
                             if (data) {
                                 let UserToken = new AuthController();
                                 const token =
                                 UserToken.createAccessToken(foundUser);
                                 res.setHeader('Authorization', token);
-                                res.cookie('jwt', token, {
-                                    httpOnly: true,
-                                    secure: false,
-                                    path: '/',
-                                    sameSite: 'strict',
-                                });
-                                //
-                                return res.redirect('/');
-                                //
+                                return res.status(200).json({
+                                    success: true,
+                                    token: token,
+                                    msg: 'Login successfully'
+                                })
                             } else {
-                                return res.status(400).json({
+                                return res.json({
                                     success: false,
-                                    message: 'Mật khẩu không đúng',
+                                    msg: 'Mật khẩu không đúng',
                                 });
                             }
                         })
@@ -90,9 +83,9 @@ class AuthController {
                             console.log(error);
                         });
                 } else {
-                    res.status(400).json({
+                    res.json({
                         success: false,
-                        massage: 'Email không tồn tại',
+                        msg: 'Email không tồn tại',
                     });
                 }
             })
@@ -100,7 +93,7 @@ class AuthController {
     }
     logout(req, res, next) {
         res.cookie('jwt', '');
-        res.redirect('/login');
+        res.redirect('/');
     }
 }
 module.exports = new AuthController();

@@ -62,7 +62,6 @@ const hbs = exphbs.create({
 //     cookie: { maxAge: 60000 },
 //     store
 //   }));
-
 app.use(passport.initialize());
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');

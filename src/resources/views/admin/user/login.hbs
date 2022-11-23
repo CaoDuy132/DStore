@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/log.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/fontawesome/css/all.min.css">
+</head>
+<style>
+    .formControl {
+        max-width: 400px;
+        width: 100%;
+
+        padding: 30px 0;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        padding: 30px 0;
+    }
+</style>
+
+<body>
+
+    <div class="formControl">
+        <form method="POST" action="/admin/loginStore">
+            <div class="form-group">
+                <h1>Đăng nhập</h1>
+                <span class="mb-3">Sử dụng tài khoản của bạn</span>
+                <input type="email" id="email" name="email" placeholder="Email" />
+                <input type="password" id="password" name="password" placeholder="Mật khẩu" />
+                <a href="#">Quên mật khẩu?</a> <br>
+                <button class="btn-signIn">Đăng nhập</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
+</body>
+
+</html>
