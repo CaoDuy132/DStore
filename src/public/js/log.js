@@ -1,7 +1,7 @@
-$(document).ready(()=>{
+$(document).ready(() => {
     register();
     login();
-})
+});
 const signUpButton = $('#signUp');
 const signInButton = $('#signIn');
 const container = $('#container');
@@ -19,49 +19,48 @@ function register() {
         const phone = $('.phone').val().trim();
         const password = $('.password').val().trim();
         $.ajax({
-            url: 'register/store',
+            url: 'registerStore',
             type: 'POST',
-            data:{
+            data: {
                 fullname,
                 email,
                 phone,
                 password,
             },
-            success: (response)=>{
-                if(response.success==true){
+            success: (response) => {
+                if (response.success == true) {
                     container.removeClass('right-panel-active');
                 }
             },
-            error: (response)=>{
+            error: (response) => {
                 console.log(response);
-            }
-        })
-    })
+            },
+        });
+    });
 }
-function login(){
+function login() {
     $('form.form-login').on('submit', (e) => {
         e.preventDefault();
         const email = $('.emailLogin').val().trim();
         const password = $('.passwordLogin').val().trim();
+        console.log(email, password);
         $.ajax({
-            url: 'login/store',
+            url: 'loginStore',
             type: 'POST',
             data: {
                 email,
-                password
+                password,
             },
             success: (response) => {
                 console.log(response);
                 if (response.success == true) {
-                    document.cookie = (`jwt=${response.token}; SameSite=strict; Secure`);
-                    window.location.href ='/?isLogin=true';
+                    document.cookie = `jwt=${response.token}; SameSite=strict; Secure`;
+                    window.location.href = '/?isLogin=true';
                 }
             },
             error: (err) => {
                 console.log(err);
-            }
-        })
-    })
+            },
+        });
+    });
 }
-
-   

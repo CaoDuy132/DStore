@@ -1,5 +1,4 @@
 const res = require('express/lib/response');
-// const {Product,User,Categogy} = require('../models/Model');
 var Product = require('../models/Product');
 var User = require('../models/User');
 const {
@@ -57,8 +56,7 @@ const AdminController = {
         User.findById(req.params.id)
 
             .then((user) => {
-                var isAdmin =
-                    req.user.role >=1 ? true : false;
+                var isAdmin = req.user.role >= 1 ? true : false;
                 res.render('admin/user/edit', {
                     title: 'Admin | Edit',
                     user: mongooseToObject(user),
@@ -144,10 +142,10 @@ const AdminController = {
             .then(() => res.redirect('back'))
             .catch(next);
     },
-    //[GET] admin/categogy/list
-    getListcategogy: (req, res, next) => {
+    //[GET] admin/categories/list
+    getListcategories: (req, res, next) => {
         let sort = res.locals;
-        let categoriesQuery = Categogy.find({});
+        let categoriesQuery = Category.find({});
         if (req.query.hasOwnProperty('sort')) {
             categoriesQuery = categoriesQuery.sort({
                 [req.query.column]: req.query.type,
@@ -214,8 +212,7 @@ const AdminController = {
     },
     //[GET] /admin/: id/edit
     editProduct: (req, res, next) => {
-        
-        Product.findOne({_id: req.params.id})
+        Product.findOne({ _id: req.params.id })
             .then((product) => {
                 res.render('admin/product/edit', {
                     title: 'Admin | Edit',

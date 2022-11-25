@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/log.css">
-    <link rel="stylesheet" type="text/css" href="/fonts/fontawesome/css/all.min.css">
 </head>
 <style>
     .formControl {
@@ -24,21 +23,46 @@
 </style>
 
 <body>
-
     <div class="formControl">
-        <form method="POST" action="/admin/loginStore">
+        <form class="form-login-admin">
             <div class="form-group">
-                <h1>Đăng nhập</h1>
-                <span class="mb-3">Sử dụng tài khoản của bạn</span>
+                <h1 class="mb-3">Đăng nhập</h1>
                 <input type="email" id="email" name="email" placeholder="Email" />
                 <input type="password" id="password" name="password" placeholder="Mật khẩu" />
-                <a href="#">Quên mật khẩu?</a> <br>
-                <button class="btn-signIn">Đăng nhập</button>
+                <a href="#" class="bm-3">Quên mật khẩu?</a> <br>
+                <div>
+                    <button class="btn-signIn mt-2">Đăng nhập</button>
+                </div>
             </div>
         </form>
     </div>
-
     <script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
 </body>
+<script>
+    $('form.form-login-admin').on('submit', (e) => {
+        e.preventDefault();
+        const email = $('#email').val().trim();
+        const password = $('#password').val().trim();
+        $.ajax({
+            url: '/admin/loginAdminStore',
+            type: 'POST',
+            data: {
+                email,
+                password
+            },
+            success: (response) => {
+                console.log(response);
+                if (response.success == true) {
+                    document.cookie = `jwt=${response.token}; SameSite=strict; Secure`;
+                    window.location.href = '/admin/Dashboard';
+                }
+            },
+            error: (err) => {
+                console.log(err);
+            },
+        })
+    })
+
+</script>
 
 </html>

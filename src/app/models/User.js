@@ -31,25 +31,27 @@ const UserSchema = new Schema(
             },
         ],
         cart: {
-            items: [{
-                productId: {
-                    type: mongoose.Types.ObjectId,
-                    ref: 'Product',
-                    required: true
+            items: [
+                {
+                    productId: {
+                        type: mongoose.Types.ObjectId,
+                        ref: 'Product',
+                        required: true,
+                    },
+                    qty: {
+                        type: Number,
+                        required: true,
+                    },
                 },
-                qty: {
-                    type: Number,
-                    required: true
-                }
-            }],
-            totalPrice: {type: Number}
-        }
+            ],
+            totalPrice: { type: Number },
+        },
     },
     {
         timestamps: true,
     },
 );
-UserSchema.pre('save', async function hashPassword(next) {
+UserSchema.pre('save', async function (next) {
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
@@ -57,49 +59,47 @@ UserSchema.pre('save', async function hashPassword(next) {
         next(err);
     }
 });
-UserSchema.methods.hashPassword = async function (password) {
+UserSchema.methods.addToCart = async function (productId) {
     try {
-        const salt = await bcrypt.genSalt(10);
-        const password = await bcrypt.hash(password, salt);
-        return password;
-    } catch (err) {
-        next(err);
-    }
-};
-UserSchema.methods.addToCart = async function(productId) {
-  try{
-    const product = await Product.findById(productId);
-    if (product) {
-        const cart = this.cart;
-        const isExisting = cart.items.findIndex(objInItems => new String(objInItems.productId).trim() === new String(product._id).trim());
-        if (isExisting >= 0) {
-            cart.items[isExisting].qty += 1;
+        const product = await Product.findById(productId);
+        if (product) {
+            const cart = this.cart;
+            const isExisting = cart.items.findIndex(
+                (objInItems) =>
+                    new String(objInItems.productId).trim() ===
+                    new String(product._id).trim(),
+            );
+            if (isExisting >= 0) {
+                cart.items[isExisting].qty += 1;
+            } else {
+                cart.items.push({ productId: product._id, qty: 1 });
+            }
+            if (!cart.totalPrice) {
+                cart.totalPrice = 0;
+            }
+            cart.totalPrice += product.price;
+            return this.save();
         } else {
-            cart.items.push({ productId: product._id, qty: 1 });
+            console.log('Product not found');
         }
-        if (!cart.totalPrice) {
-            cart.totalPrice = 0;
-        }
-        cart.totalPrice += product.price;
-        return this.save();
-    }else{
-        console.log('Product not found')
+    } catch (err) {
+        console.log(err);
     }
-  }catch(err){
-    console.log(err)
-  }
-
 };
-UserSchema.methods.removeFromCart = async function(productId) {
+UserSchema.methods.removeFromCart = async function (productId) {
     const cart = this.cart;
-    const isExisting = cart.items.findIndex(objInItems => new String(objInItems.productId).trim() === new String(productId).trim());
+    const isExisting = cart.items.findIndex(
+        (objInItems) =>
+            new String(objInItems.productId).trim() ===
+            new String(productId).trim(),
+    );
     if (isExisting >= 0) {
         const prod = await Product.findById(productId);
         cart.totalPrice -= prod.price * cart.items[isExisting].qty;
         cart.items.splice(isExisting, 1);
         return this.save();
     }
-}
+};
 UserSchema.plugin(mongooseDelete, {
     deletedAt: true,
     overrideMethods: 'all',

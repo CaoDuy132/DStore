@@ -6,7 +6,6 @@ const { ExtractJwt } = require('passport-jwt');
 const { ACCESS_SECRET_TOKEN } = process.env;
 var User = require('../models/User');
 
-
 passport.use(
     new JwtStrategy(
         {

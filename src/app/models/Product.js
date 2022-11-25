@@ -38,7 +38,7 @@ const ProductSchema = new Schema(
             ref: 'User',
         },
     },
-    { timestamps: true},
+    { timestamps: true },
 );
 mongoose.plugin(slug);
 ProductSchema.plugin(mongooseDelete, {
