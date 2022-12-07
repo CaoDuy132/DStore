@@ -7,17 +7,15 @@ const route = require('./routes');
 const db = require('./config/db');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-//method override restAPI
 var methodOverride = require('method-override');
-//connect Middleware
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
-//connect db to expressdb
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const {ACCESS_SECRET_TOKEN} = process.env;
+const UserModel = require('./app/models/User')
 db.connect();
 app.use(cookieParser());
 const exphbs = require('express-handlebars');
-const UserModel = require('./app/models/User');
-const { mongooseToObject } = require('./util/mongoose');
 const hbs = exphbs.create({
     extname: '.hbs',
     defaultLayout: 'main',
@@ -29,12 +27,12 @@ const hbs = exphbs.create({
         sum(a, b) {
             return a + b;
         },
-        compare(a){
-          if(a!=null){
-            return a
-          }else{
-            return a=null
-          }
+        compare(a,b){
+            if(a==b){
+                return `<li><a href="/admin">Admin page</a></li>`;
+            }else{
+                return null
+            }
         },
         mul(a, b) {
             return a * b;
@@ -63,7 +61,6 @@ const hbs = exphbs.create({
         },
     },
 });
-
 app.use(passport.initialize());
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
@@ -72,20 +69,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(methodOverride('_method'));
-// Middleware to expose the app's shared templates to the cliet-side of the app
-//custom middleware
 app.use(SortMiddleware);
 app.set('views', path.join(__dirname, 'resources', 'views'));
-// console.log('PATH: ', path.join(__dirname, 'resources/views'))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req, res, next) => {
-    UserModel.findById('63808127e5c0de0b21ddb94f')
-        .then((userInDB) => {
-            req.user = userInDB;
-            next();
-        })
-        .catch((err) => console.log(err));
-});
+app.use(async(req,res,next)=>{
+    try{
+        const token = req.cookies.jwt;
+        if(token){
+            const userId = jwt.verify(token,ACCESS_SECRET_TOKEN);
+            const userInDB = await UserModel.findById(userId.id);
+            req.user = userInDB
+            console.log(req.user);
+        }else{
+            req.user=null
+        }
+        next()
+    }catch(err){
+        console.log(err)
+    }
+
+})
 route(app);
 app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`);

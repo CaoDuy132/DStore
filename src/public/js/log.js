@@ -43,7 +43,6 @@ function login() {
         e.preventDefault();
         const email = $('.emailLogin').val().trim();
         const password = $('.passwordLogin').val().trim();
-        console.log(email, password);
         $.ajax({
             url: 'loginStore',
             type: 'POST',

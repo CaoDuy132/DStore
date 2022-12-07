@@ -6,21 +6,18 @@ const {
     mongooseToObject,
 } = require('../../util/mongoose');
 const AdminController = {
-    getProfile: (req, res, next) => {
-        let currenUserId = res.currentUserId;
-        if (!currenUserId) {
-            currenUserId = '62fb7148b1a0aa8d80ee72cd';
-            // res.redirect('/admin/login');
+    getProfile: async(req, res, next) => {
+        const user = await User.findById({ _id: '63808127e5c0de0b21ddb94f' })
+        try{
+            console.log(user);
+            res.render('admin/user/profile', {
+                currentUser: mongooseToObject(user),
+                title: 'Admin | Profile',
+                layout: 'admin',
+            });
+        }catch(err){
+            console.log(err);
         }
-        User.findById({ _id: currenUserId })
-            .then((user) => {
-                res.render('admin/user/profile', {
-                    currentUser: mongooseToObject(user),
-                    title: 'Admin | Profile',
-                    layout: 'admin',
-                });
-            })
-            .catch(next);
     },
     getListUser: (req, res, next) => {
         let sort = res.locals;

@@ -62,7 +62,6 @@
 						<li>
 							<a href="contact.html">Contact</a>
 						</li>
-
 						{{#if currentUser}}
 						<li>
 							<img class="rounded-circle img_user" src="/images/{{currentUser.image}}" alt="">
@@ -72,11 +71,11 @@
 								<li><a href="#">Account</a></li>
 								<li><a href="/logout">Logout</a></li>
 								<li><a href="#">Forgot password</a></li>
+								{{{compare currentUser.role '1'}}}
 							</ul>
 						</li>
 						</li>
 						{{else}}
-
 						<li class="active-menu">
 							<a href="/login">Login</a>
 						</li>
