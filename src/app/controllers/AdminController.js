@@ -7,11 +7,10 @@ const {
 } = require('../../util/mongoose');
 const AdminController = {
     getProfile: async(req, res, next) => {
-        const user = await User.findById({ _id: '63808127e5c0de0b21ddb94f' })
+        const currentUser = await req.user;
         try{
-            console.log(user);
             res.render('admin/user/profile', {
-                currentUser: mongooseToObject(user),
+                currentUser: mongooseToObject(currentUser),
                 title: 'Admin | Profile',
                 layout: 'admin',
             });
@@ -163,11 +162,7 @@ const AdminController = {
     //[GET] admin/list
     getListProduct: (req, res, next) => {
         var page = req.query.page;
-        let currenUserId = res.currentUserId;
-        if (!currenUserId) {
-            currenUserId = '62fb7148b1a0aa8d80ee72cd';
-        }
-        let currentUser = User.findById({ _id: currenUserId });
+        let currentUser = req.user;
         let sort = res.locals;
         const PAGE_SIZE = 5;
         var productQuery = Product.find({});
@@ -188,13 +183,14 @@ const AdminController = {
             currentUser,
         ])
             .then(([products, pageCount, deletedCount, currentUser]) => {
+                console.log(currentUser);
                 res.render('admin/product/list', {
                     title: 'Admin | List',
                     pageCount,
                     deletedCount,
                     sort,
+                    currentUser,
                     products: multipleMongooseToObject(products),
-                    currentUser: mongooseToObject(currentUser),
                     layout: 'admin',
                 });
             })

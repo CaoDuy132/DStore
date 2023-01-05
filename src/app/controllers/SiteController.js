@@ -9,7 +9,13 @@ const {
 const SiteController = {
     index: async (req, res, next) => {
         try {
-            const products = await Product.find({});
+            const PAGE_SIZE = 8;
+            let page = req.query.page
+            if(!page || page <1){
+                page = 1;
+            }
+            const SKIP = (page -1)* PAGE_SIZE;
+            const products = await Product.find({}).skip(SKIP).limit(8);
             res.render('shop/home', {
                 products: multipleMongooseToObject(products),
                 title: 'Trang chủ',

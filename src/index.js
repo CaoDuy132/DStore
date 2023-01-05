@@ -79,7 +79,6 @@ app.use(async(req,res,next)=>{
             const userId = jwt.verify(token,ACCESS_SECRET_TOKEN);
             const userInDB = await UserModel.findById(userId.id);
             req.user = userInDB
-            console.log(req.user);
         }else{
             req.user=null
         }

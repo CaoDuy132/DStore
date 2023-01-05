@@ -26,7 +26,7 @@ router.put(
 );
 //admin/categogies
 router.get('/categories/create', AdminController.createProduct);
-router.get('/categories/list', AdminController.getListcategories);
+router.get('/cateManager/list', AdminController.getListcategories);
 router.get('/categories/trash', AdminController.trashProduct);
 //admin/product
 router.get('/list', AdminController.getListProduct);

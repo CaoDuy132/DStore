@@ -142,9 +142,10 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   max-height: 150px;
   height: 100%;
 }
+
 .list-img-admin {
-  width: 70px;
-  height: 70x;
+  width: 120px;
+  height: 120x;
 }
 
 .img_user {
