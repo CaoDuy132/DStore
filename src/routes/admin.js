@@ -35,7 +35,7 @@ router.get('/trash', AdminController.trashProduct);
 router.get('/profile', AdminController.getProfile);
 router.post('/store', upload.single('image'), AdminController.storeProduct);
 router.post('/check-product-action', AdminController.checkProductAction);
-router.get('/:id/edit', AdminController.editProduct);
+router.get('/:id/edit', AdminController.editUser);
 router.put(
     '/:id/update',
     upload.single('image'),

@@ -107,27 +107,27 @@ const OrderShema = new Schema(
 );
 
 mongoose.plugin(slug);
-UserSchema.pre('save', async function hashPassword(next) {
-    try {
-        //Generate a salt
-        const salt = await bcrypt.genSalt(10);
-        //Generate a password hash (salt + hash)
-        this.password = await bcrypt.hash(this.password, salt);
-    } catch (err) {
-        next(err);
-    }
-});
-UserSchema.methods.hashPassword = async function (password) {
-    try {
-        //Generate a salt
-        const salt = await bcrypt.genSalt(10);
-        //Generate a password hash (salt + hash)
-        password = await bcrypt.hash(password, salt);
-        return password;
-    } catch (err) {
-        next(err);
-    }
-};
+// UserSchema.pre('save', async function hashPassword(next) {
+//     try {
+//         //Generate a salt
+//         const salt = await bcrypt.genSalt(10);
+//         //Generate a password hash (salt + hash)
+//         this.password = await bcrypt.hash(this.password, salt);
+//     } catch (err) {
+//         next(err);
+//     }
+// });
+// UserSchema.methods.hashPassword = async function (password) {
+//     try {
+//         //Generate a salt
+//         const salt = await bcrypt.genSalt(10);
+//         //Generate a password hash (salt + hash)
+//         password = await bcrypt.hash(password, salt);
+//         return password;
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 UserSchema.plugin(mongooseDelete, {
     deletedAt: true,
     overrideMethods: 'all',
