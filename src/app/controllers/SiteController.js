@@ -16,7 +16,7 @@ const SiteController = {
             }
             const SKIP = (page -1)* PAGE_SIZE;
             const products = await Product.find({}).skip(SKIP).limit(8);
-            res.render('shop/home', {
+             res.render('shop/home', {
                 products: multipleMongooseToObject(products),
                 title: 'Trang chủ',
                 currentUser: mongooseToObject(req.user)
@@ -28,9 +28,10 @@ const SiteController = {
     productDetail: async(req, res, next) => {
         try{
             const product = await Product.findOne({ slug: req.params.slug })
+            console.log(product);
             res.render('shop/product-detail', {
                 product: mongooseToObject(product),
-                currentUser: mongooseToObject(req.user)
+                currentUser: mongooseToObject(req.user),
             });
         }catch(err){
             console.log(err)
@@ -39,5 +40,8 @@ const SiteController = {
     show: (req, res) => {
         res.send('Index slug page');
     },
+    demoSocket: (req,res,next)=>{
+        return res.render('shop/demoSocket',{layout: false});
+    }
 };
 module.exports = SiteController;

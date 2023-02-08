@@ -35,6 +35,7 @@ router.post('/registerStore', AuthController.registerStore);
 router.get('/login', AuthController.getloginForm);
 router.post('/loginStore', AuthController.loginStore);
 router.get('/logout', AuthController.logout);
+router.get('/demoSocket',SiteController.demoSocket);
 router.get(
     '/secret',
     passport.authenticate('jwt', { session: false }),
@@ -43,6 +44,6 @@ router.get(
     },
 );
 ///////////////////////////////////////////////////
-router.get('/:slug', SiteController.productDetail);
+// router.get('/:slug', SiteController.productDetail);
 router.get('/', SiteController.index);
 module.exports = router;

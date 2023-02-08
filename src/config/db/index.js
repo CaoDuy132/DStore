@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
-async function connect() {
-    try {
-        await mongoose.connect('mongodb://localhost:27017/education_Nodejs', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('Connect successfully');
-    } catch (error) {
-        console.log('fail');
-    }
+ function connect() {
+    const uri = "mongodb://127.0.0.1:27017/education_Nodejs";
+    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.log(err));
+
 }
 module.exports = { connect };

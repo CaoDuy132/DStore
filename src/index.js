@@ -12,9 +12,11 @@ const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const {ACCESS_SECRET_TOKEN} = process.env;
-const UserModel = require('./app/models/User')
+const UserModel = require('./app/models/User');
 db.connect();
-app.use(cookieParser());
+//demo socket.io
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({
     extname: '.hbs',
@@ -61,9 +63,10 @@ const hbs = exphbs.create({
         },
     },
 });
-app.use(passport.initialize());
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
+app.use(cookieParser());
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -89,6 +92,11 @@ app.use(async(req,res,next)=>{
 
 })
 route(app);
-app.listen(PORT, () => {
-    console.log(`Example app listening at http://localhost:${PORT}`);
-});
+  io.on('connection', socket => {
+    socket.on('send chat message',(...obj) => {
+        socket.broadcast.emit('chat message',obj)
+    });
+  });
+server.listen(PORT, () => {
+    console.log(`listening on ${PORT}`);
+  });
