@@ -17,7 +17,7 @@ const UserSchema = new Schema(
         email: { type: String, unique: true, lowercase: true, trim: true },
         role: { type: Number, default: 0 },
         password: { type: String, trim: true },
-        authType: { type: String, enum: ['system', 'google', 'facebook'] },
+        authType: { type: String, enum: ['system', 'google', 'facebook'],default: 'system'},
         address: { type: String, trim: true },
         image: { type: String, default: 'avatar.jpg' },
         googleId: { type: String, default: null },

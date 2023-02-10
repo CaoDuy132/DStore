@@ -43,7 +43,10 @@ const SiteController = {
         return res.render('shop/demoSocket', { layout: false });
     },
     AuthGoogle: (req, res, next) => {
-        return res.json('Login successfully');
+        return res.json('Login google successfully');
+    },
+    AuthFacebook: (req, res, next) => {
+        return res.json('Login facebook successfully');
     },
 };
 module.exports = SiteController;
