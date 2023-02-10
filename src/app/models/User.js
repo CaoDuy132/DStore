@@ -16,9 +16,12 @@ const UserSchema = new Schema(
         phone: { type: Number, trim: true },
         email: { type: String, unique: true, lowercase: true, trim: true },
         role: { type: Number, default: 0 },
-        password: { type: String, required: true, trim: true },
+        password: { type: String, trim: true },
+        authType: { type: String, enum: ['system', 'google', 'facebook'] },
         address: { type: String, trim: true },
         image: { type: String, default: 'avatar.jpg' },
+        googleId: { type: String, default: null },
+        faceBookId: { type: String, default: null },
         productID: [
             {
                 type: Schema.Types.ObjectId,
@@ -53,9 +56,14 @@ const UserSchema = new Schema(
 );
 UserSchema.pre('save', async function (next) {
     try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
+        if (this.googleId || this.faceBookId) {
+            next();
+        } else {
+            const salt = await bcrypt.genSalt(10);
+            this.password = bcrypt.hash(this.password, salt);
+        }
     } catch (err) {
+        console.log(err);
         next(err);
     }
 });

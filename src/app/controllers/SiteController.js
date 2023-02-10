@@ -10,38 +10,40 @@ const SiteController = {
     index: async (req, res, next) => {
         try {
             const PAGE_SIZE = 8;
-            let page = req.query.page
-            if(!page || page <1){
+            let page = req.query.page;
+            if (!page || page < 1) {
                 page = 1;
             }
-            const SKIP = (page -1)* PAGE_SIZE;
+            const SKIP = (page - 1) * PAGE_SIZE;
             const products = await Product.find({}).skip(SKIP).limit(8);
-             res.render('shop/home', {
+            res.render('shop/home', {
                 products: multipleMongooseToObject(products),
                 title: 'Trang chủ',
-                currentUser: mongooseToObject(req.user)
+                currentUser: mongooseToObject(req.user),
             });
         } catch (err) {
             next(err);
         }
     },
-    productDetail: async(req, res, next) => {
-        try{
-            const product = await Product.findOne({ slug: req.params.slug })
-            console.log(product);
+    productDetail: async (req, res, next) => {
+        try {
+            const product = await Product.findOne({ slug: req.params.slug });
             res.render('shop/product-detail', {
                 product: mongooseToObject(product),
                 currentUser: mongooseToObject(req.user),
             });
-        }catch(err){
-            console.log(err)
+        } catch (err) {
+            console.log(err);
         }
     },
     show: (req, res) => {
         res.send('Index slug page');
     },
-    demoSocket: (req,res,next)=>{
-        return res.render('shop/demoSocket',{layout: false});
-    }
+    demoSocket: (req, res, next) => {
+        return res.render('shop/demoSocket', { layout: false });
+    },
+    AuthGoogle: (req, res, next) => {
+        return res.json('Login successfully');
+    },
 };
 module.exports = SiteController;

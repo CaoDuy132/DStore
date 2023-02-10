@@ -16,8 +16,8 @@ const AuthMiddleware = {
                     next();
                 }
             });
-        }else{
-            return res.redirect('/login')
+        } else {
+            return res.redirect('/login');
         }
     },
     verifyUser: (req, res, next) => {
@@ -28,8 +28,8 @@ const AuthMiddleware = {
                 return res.json({
                     success: false,
                     status: 401,
-                    msg: 'Đăng nhập để tiếp tục'
-                })
+                    msg: 'Đăng nhập để tiếp tục',
+                });
             }
         });
     },
@@ -38,11 +38,11 @@ const AuthMiddleware = {
             if (req.user.role == 1) {
                 next();
             } else {
-               return res.json({
-                success: false,
-                status: 401,
-                msg: 'Chức năng dành cho admin '
-               })
+                return res.json({
+                    success: false,
+                    status: 401,
+                    msg: 'Chức năng dành cho admin ',
+                });
             }
         });
     },

@@ -6,15 +6,15 @@ const {
     mongooseToObject,
 } = require('../../util/mongoose');
 const AdminController = {
-    getProfile: async(req, res, next) => {
+    getProfile: async (req, res, next) => {
         const currentUser = await req.user;
-        try{
+        try {
             res.render('admin/user/profile', {
                 currentUser: mongooseToObject(currentUser),
                 title: 'Admin | Profile',
                 layout: 'admin',
             });
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     },

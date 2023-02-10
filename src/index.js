@@ -11,12 +11,12 @@ var methodOverride = require('method-override');
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const {ACCESS_SECRET_TOKEN} = process.env;
+const { ACCESS_SECRET_TOKEN } = process.env;
 const UserModel = require('./app/models/User');
 db.connect();
 //demo socket.io
-const server = require("http").Server(app);
-const io = require("socket.io")(server);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({
     extname: '.hbs',
@@ -29,11 +29,11 @@ const hbs = exphbs.create({
         sum(a, b) {
             return a + b;
         },
-        compare(a,b){
-            if(a==b){
+        compare(a, b) {
+            if (a == b) {
                 return `<li><a href="/admin">Admin page</a></li>`;
-            }else{
-                return null
+            } else {
+                return null;
             }
         },
         mul(a, b) {
@@ -75,28 +75,27 @@ app.use(methodOverride('_method'));
 app.use(SortMiddleware);
 app.set('views', path.join(__dirname, 'resources', 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(async(req,res,next)=>{
-    try{
+app.use(async (req, res, next) => {
+    try {
         const token = req.cookies.jwt;
-        if(token){
-            const userId = jwt.verify(token,ACCESS_SECRET_TOKEN);
+        if (token) {
+            const userId = jwt.verify(token, ACCESS_SECRET_TOKEN);
             const userInDB = await UserModel.findById(userId.id);
-            req.user = userInDB
-        }else{
-            req.user=null
+            req.user = userInDB;
+        } else {
+            req.user = null;
         }
-        next()
-    }catch(err){
-        console.log(err)
+        next();
+    } catch (err) {
+        console.log(err);
     }
-
-})
+});
 route(app);
-  io.on('connection', socket => {
-    socket.on('send chat message',(...obj) => {
-        socket.broadcast.emit('chat message',obj)
+io.on('connection', (socket) => {
+    socket.on('send chat message', (...obj) => {
+        socket.broadcast.emit('chat message', obj);
     });
-  });
+});
 server.listen(PORT, () => {
     console.log(`listening on ${PORT}`);
-  });
+});

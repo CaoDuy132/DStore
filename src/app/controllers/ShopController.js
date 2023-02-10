@@ -2,8 +2,8 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const {
     mongooseToObject,
-     multipleMongooseToObject
-     } = require('../../util/mongoose');
+    multipleMongooseToObject,
+} = require('../../util/mongoose');
 const CartController = {
     addToCart: async (req, res, next) => {
         console.log('current User', req.user);
@@ -26,7 +26,7 @@ const CartController = {
                     totalPrice: user.cart.totalPrice,
                     currentUser: mongooseToObject(req.user),
                     title: 'Dstore | cart',
-                }); 
+                });
             })
             .catch((err) => console.log(err));
     },
