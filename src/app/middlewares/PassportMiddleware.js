@@ -62,7 +62,6 @@ passport.use(new FacebookTokenStrategy({
     clientSecret: FACEBOOK_CLIENT_SECRET,
     fbGraphVersion: 'v3.0'
   }, async(accessToken, refreshToken, profile, next)=>{
-    console.log(profile)
     try {
         const userGoogle = await User.findOne({
             faceBookID: profile.id,

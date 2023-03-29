@@ -36,7 +36,11 @@ router.get(
         return res.json('Login successfully');
     },
 );
-
+router.get('/routeProtected', function(req, res, next) {
+    const authHeader = req.header('Authorization');
+    console.log(authHeader);
+    return res.json(authHeader);
+});
 router.get('/:slug', SiteController.productDetail);
 router.get('/', SiteController.index);
 module.exports = router;

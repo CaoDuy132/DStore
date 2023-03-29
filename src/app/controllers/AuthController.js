@@ -57,6 +57,7 @@ class AuthController {
                         .then((data) => {
                             if (data) {
                                 let UserToken = new AuthController();
+                                //set cookies
                                 const token = UserToken.createAccessToken(
                                     foundUser,
                                     '365d',

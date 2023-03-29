@@ -11,6 +11,7 @@ var methodOverride = require('method-override');
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const { ACCESS_SECRET_TOKEN } = process.env;
 const UserModel = require('./app/models/User');
 db.connect();
