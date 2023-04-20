@@ -19,7 +19,10 @@ const UserSchema = new Schema(
         password: { type: String, trim: true },
         authType: { type: String, enum: ['system', 'google', 'facebook'],default: 'system'},
         address: { type: String, trim: true },
-        image: { type: String, default: 'avatar.jpg' },
+        image: { 
+            public_id: {type:String, required:true},
+            url:{type:String, required:true},
+        },
         googleId: { type: String, default: null },
         faceBookId: { type: String, default: null },
         productID: [

@@ -64,6 +64,11 @@ const hbs = exphbs.create({
         },
     },
 });
+const cors = require('cors');
+app.use(cors({
+    credentials: true,
+    origin: [`http://localhost:${PORT}`]
+  }));
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.use(cookieParser());

@@ -1,10 +1,11 @@
 const res = require('express/lib/response');
-var Product = require('../models/Product');
-var User = require('../models/User');
+const Product = require('../models/Product');
+const User = require('../models/User');
 const {
     multipleMongooseToObject,
     mongooseToObject,
 } = require('../../util/mongoose');
+const cloudinary =require('../../util/cloudinary');
 const AdminController = {
     getProfile: async (req, res, next) => {
         const currentUser = await req.user;
@@ -64,10 +65,7 @@ const AdminController = {
     },
     //[POST] /admin/:id/update
     updateUser: (req, res, next) => {
-        if (req.file) {
-            const formData = req.file.filename;
-            req.body.image = formData;
-        }
+        req.body.image = {public_id: req.file.filename,url: req.file.path};
         User.updateMany({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/admin/user/list'))
             .catch(next);
@@ -110,21 +108,30 @@ const AdminController = {
             .catch(next);
     },
     //[POST] /admin/user/store
-    storeUser: (req, res, next) => {
-        const formData = req.file.filename;
-        const image = formData;
+    storeUser: async(req, res, next) => {
         const { fullname, email, password, phone, address } = req.body;
-        const user = new User({
+        try{
+            if (!req.file) {
+                next(new Error('No file uploaded!'));
+                return;
+              }
+        const user = await User({
             fullname,
             email,
             password,
             phone,
             address,
-            image,
+            image:{
+                public_id: req.file.filename,
+                url: req.file.path
+            }
         });
-        user.save()
-            .then(() => res.redirect('/admin/user/list'))
-            .catch(next);
+        await user.save()
+        res.redirect('/admin/user/list')
+        }catch(err){
+            console.log(err);
+            next(err);
+        }
     },
     // /[PATCH] /admin/user:id/restore
     restoreUser: (req, res, next) => {
@@ -183,7 +190,6 @@ const AdminController = {
             currentUser,
         ])
             .then(([products, pageCount, deletedCount, currentUser]) => {
-                console.log(currentUser);
                 res.render('admin/product/list', {
                     title: 'Admin | List',
                     pageCount,
