@@ -93,8 +93,11 @@ app.use(async (req, res, next) => {
 });
 route(app);
 io.on('connection', (socket) => {
+    console.log('Connect socket id:',socket.id);
+    socket.on('disconnect', () =>console.log('Disconnect socket id: ',socket.id));
     socket.on('send chat message', (...obj) => {
         socket.broadcast.emit('chat message', obj);
+        console.log('call chat message')
     });
 });
 server.listen(PORT, () => {

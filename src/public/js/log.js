@@ -51,30 +51,12 @@ function login() {
         .then(res=>{
             if(res.data.success==true) {
                 const token = res.data.token;
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('token', res.data.token);
                 document.cookie = `jwt=${token}; SameSite=strict; Secure`;
                 window.location.href = '/?isLogin=true';
             }
         })
         .catch(err=>console.log(err))
-        // $.ajax({
-        //     url: 'loginStore',
-        //     type: 'POST',
-        //     data: {
-        //         email,
-        //         password,
-        //     },
-        //     success: (response) => {
-        //         console.log(response);
-        //         if (response.success == true) {
-        //             document.cookie = `jwt=${response.token}; SameSite=strict; Secure`;
-        //             window.location.href = '/?isLogin=true';
-        //         }
-        //     },
-        //     error: (err) => {
-        //         console.log(err);
-        //     },
-        // });
         axios.get('/protected', {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
