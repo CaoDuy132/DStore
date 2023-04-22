@@ -20,8 +20,8 @@ const UserSchema = new Schema(
         authType: { type: String, enum: ['system', 'google', 'facebook'],default: 'system'},
         address: { type: String, trim: true },
         image: { 
-            public_id: {type:String, required:true},
-            url:{type:String, required:true},
+            public_id: {type:String},
+            url:{type:String},
         },
         googleId: { type: String, default: null },
         faceBookId: { type: String, default: null },

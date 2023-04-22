@@ -56,8 +56,13 @@
                   <td class="cell">{{sum @index 1}}</td>
                   <td class="cell"><span class="truncate">{{this.name}}</span></td>
                   <td class="cell">{{this.price}}</td>
-
-                  <td class="cell"><img class="list-img-admin" src="/images/{{this.image}}" alt="{{this.image}}"></td>
+                  {{#if this.image.url}}
+                  <td class="cell"><img class="list-img-admin" src="{{this.image.url}}" alt="{{this.image.public_id}}">
+                  </td>
+                  {{else}}
+                  <td class="cell"><img class="list-img-admin" src="/images/{{this.image}}" alt="{{this.image}}">
+                  </td>
+                  {{/if}}
                   <td class="cell">{{this.standOut}}</td>
                   <td class="cell">
                     <a class="btn btn-outline-info" href="/admin/{{this._id}}/edit">
@@ -162,7 +167,6 @@
     $("#delele-product-modal").on("show.bs.modal", function (event) {
       var button = $(event.relatedTarget);
       var id = button.data("id");
-      console.log(id);
       btnConfirm.onclick = function () {
         formDelete.action = "/admin/" + id + "/delete?_method=DELETE";
         formDelete.submit();

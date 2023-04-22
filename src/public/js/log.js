@@ -11,6 +11,10 @@ signUpButton.on('click', () => {
 signInButton.on('click', () => {
     container.removeClass('right-panel-active');
 });
+const btn_login = document.getElementById('btn-login');
+btn_login.onClick=function(){
+    console.log('click')
+}
 function register() {
     $('form.form-register').on('submit', (e) => {
         e.preventDefault();

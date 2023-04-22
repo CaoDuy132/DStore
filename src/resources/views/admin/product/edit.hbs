@@ -18,10 +18,12 @@
     <label class="form-label font-weight-bold" for="customFile">Ảnh(*)</label>
     <label class="form-label font-weight-bold d-flex justify-content-center" for="customFile">
       <div class="mb-4">
-        {{#if product.image}}
+        {{#if product.image.url}}
+        <img id="img-preview-edit" src="{{product.image.url}}" alt="{{product.image.public_id}}" class="img-preview">
+        {{else if product.image}}
         <img id="img-preview-edit" src="/images/{{product.image}}" alt="{{product.image}}" class="img-preview">
         {{else}}
-        <img id="img-preview-edit" src="/noimage/image-not-found.png" alt="{{product.image}}" class="img-preview">
+        <img id="img-preview-edit" src="/noimage/image-not-found.png" alt="image-not-found.png" class="img-preview">
         {{/if}}
       </div>
     </label>

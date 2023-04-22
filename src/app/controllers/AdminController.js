@@ -5,7 +5,7 @@ const {
     multipleMongooseToObject,
     mongooseToObject,
 } = require('../../util/mongoose');
-const cloudinary =require('../../util/cloudinary');
+const uploadCloud =require('../../util/cloudinary');
 const AdminController = {
     getProfile: async (req, res, next) => {
         const currentUser = await req.user;
@@ -51,7 +51,6 @@ const AdminController = {
     //[GET] /admin/: id/edit
     editUser: (req, res, next) => {
         User.findById(req.params.id)
-
             .then((user) => {
                 var isAdmin = req.user.role >= 1 ? true : false;
                 res.render('admin/user/edit', {
@@ -64,11 +63,18 @@ const AdminController = {
             .catch(next);
     },
     //[POST] /admin/:id/update
-    updateUser: (req, res, next) => {
-        req.body.image = {public_id: req.file.filename,url: req.file.path};
-        User.updateMany({ _id: req.params.id }, req.body)
-            .then(() => res.redirect('/admin/user/list'))
-            .catch(next);
+    updateUser: async(req, res, next) => {
+        const id = req.params.id;
+        try{
+            if(req.file){
+                req.body.image = {public_id: req.file.filename,url: req.file.path};
+            }
+            await uploadCloud.deleteImgCloud(User,req.params.id)
+            await User.updateMany({_id:id},req.body);
+             res.redirect('/admin/user/list');
+        }catch(err){
+            next(err)
+        }
     },
     // /[POST] /admin/check-user-action/
     checkUserAction: (req, res, next) => {
@@ -129,7 +135,6 @@ const AdminController = {
         await user.save()
         res.redirect('/admin/user/list')
         }catch(err){
-            console.log(err);
             next(err);
         }
     },
@@ -223,24 +228,38 @@ const AdminController = {
     },
     //[POST] /admin/store
     storeProduct: (req, res, next) => {
-        const formData = req.file.filename;
-        const image = formData;
+        if (!req.file) {
+            next(new Error('No file uploaded!'));
+            return;
+        }
+        const image ={
+            public_id: req.file.filename,
+            url: req.file.path
+        };
         const { name, price, description } = req.body;
-        const product = new Product({ name, price, description, image });
+        const product = new Product({
+             name,
+              price,
+               description,
+               image
+            });
         product
             .save()
             .then(() => res.redirect('/admin/list'))
             .catch(next);
     },
     //[POST] /admin/:id/update
-    updateProduct: (req, res, next) => {
-        if (req.file) {
-            const formData = req.file.filename;
-            req.body.image = formData;
+    updateProduct: async(req, res, next) => {
+        try{
+            if(req.file){
+                req.body.image = {public_id: req.file.filename,url: req.file.path};
+            }
+            await uploadCloud.deleteImgCloud(Product,req.params.id)
+            await Product.updateOne({ _id: req.params.id }, req.body)
+            res.redirect('/admin/list')
+        }catch(err){
+            next(new Error(err));
         }
-        Product.updateOne({ _id: req.params.id }, req.body)
-            .then(() => res.redirect('/admin/list'))
-            .catch(next);
     },
     // /[DELETE] /admin/:id/delete
     deleteProduct: (req, res, next) => {
