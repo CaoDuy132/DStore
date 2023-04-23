@@ -12,9 +12,9 @@ signInButton.on('click', () => {
     container.removeClass('right-panel-active');
 });
 const btn_login = document.getElementById('btn-login');
-btn_login.onClick=function(){
-    console.log('click')
-}
+btn_login.onClick = function () {
+    console.log('click');
+};
 function register() {
     $('form.form-register').on('submit', (e) => {
         e.preventDefault();
@@ -50,25 +50,28 @@ function login() {
         axios({
             method: 'POST',
             url: 'loginStore',
-            data: {email, password}
+            data: { email, password },
         })
-        .then(res=>{
-            if(res.data.success==true) {
-                const token = res.data.token;
-                localStorage.setItem('token', res.data.token);
-                document.cookie = `jwt=${token}; SameSite=strict; Secure`;
-                window.location.href = '/?isLogin=true';
-            }
-        })
-        .catch(err=>console.log(err))
-        axios.get('/protected', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          }).then(response => {
-            // Handle response from server
-          }).catch(error => {
-            console.error(error);
-          });
+            .then((res) => {
+                if (res.data.success == true) {
+                    const token = res.data.token;
+                    localStorage.setItem('token', res.data.token);
+                    document.cookie = `jwt=${token}; SameSite=strict; Secure`;
+                    window.location.href = '/?isLogin=true';
+                }
+            })
+            .catch((err) => console.log(err));
+        axios
+            .get('/protected', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
+            .then((response) => {
+                // Handle response from server
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     });
 }

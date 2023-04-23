@@ -21,8 +21,8 @@ const ProductSchema = new Schema(
             required: true,
         },
         image: {
-                public_id: String,
-                url: String,
+            public_id: String,
+            url: String,
         },
         catelogies: {
             type: String,

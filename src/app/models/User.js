@@ -17,11 +17,15 @@ const UserSchema = new Schema(
         email: { type: String, unique: true, lowercase: true, trim: true },
         role: { type: Number, default: 0 },
         password: { type: String, trim: true },
-        authType: { type: String, enum: ['system', 'google', 'facebook'],default: 'system'},
+        authType: {
+            type: String,
+            enum: ['system', 'google', 'facebook'],
+            default: 'system',
+        },
         address: { type: String, trim: true },
-        image: { 
-            public_id: {type:String},
-            url:{type:String},
+        image: {
+            public_id: { type: String },
+            url: { type: String },
         },
         googleId: { type: String, default: null },
         faceBookId: { type: String, default: null },
@@ -57,7 +61,7 @@ const UserSchema = new Schema(
         timestamps: true,
     },
 );
-UserSchema.pre('save', async function (next) {   
+UserSchema.pre('save', async function (next) {
     try {
         if (this.googleId || this.faceBookId) {
             next();

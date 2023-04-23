@@ -36,7 +36,7 @@ router.get(
         return res.json('Login successfully');
     },
 );
-router.get('/routeProtected', function(req, res, next) {
+router.get('/routeProtected', function (req, res, next) {
     const authHeader = req.header('Authorization');
     console.log(authHeader);
     return res.json(authHeader);

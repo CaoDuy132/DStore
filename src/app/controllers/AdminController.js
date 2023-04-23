@@ -5,8 +5,29 @@ const {
     multipleMongooseToObject,
     mongooseToObject,
 } = require('../../util/mongoose');
-const uploadCloud =require('../../util/cloudinary');
+const uploadCloud = require('../../util/cloudinary');
 const AdminController = {
+    search: (req, res, next) => {
+        const searchTerm = req.body.query;
+        // escape-string-regexp is an (ESM) and you are trying to use it in a CommonJS module
+        import('escape-string-regexp')
+            .then((escapeStringRegexp) => {
+                const escapedSearchTerm =
+                    escapeStringRegexp.default(searchTerm);
+                Product.find(
+                    { name: { $regex: new RegExp(escapedSearchTerm, 'i') } },
+                    function (err, result) {
+                        if (err) {
+                            next(err);
+                        }
+                        return res.json(result);
+                    },
+                );
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
     getProfile: async (req, res, next) => {
         const currentUser = await req.user;
         try {
@@ -63,17 +84,20 @@ const AdminController = {
             .catch(next);
     },
     //[POST] /admin/:id/update
-    updateUser: async(req, res, next) => {
+    updateUser: async (req, res, next) => {
         const id = req.params.id;
-        try{
-            if(req.file){
-                req.body.image = {public_id: req.file.filename,url: req.file.path};
+        try {
+            if (req.file) {
+                req.body.image = {
+                    public_id: req.file.filename,
+                    url: req.file.path,
+                };
             }
-            await uploadCloud.deleteImgCloud(User,req.params.id)
-            await User.updateMany({_id:id},req.body);
-             res.redirect('/admin/user/list');
-        }catch(err){
-            next(err)
+            await uploadCloud.deleteImgCloud(User, req.params.id);
+            await User.updateMany({ _id: id }, req.body);
+            res.redirect('/admin/user/list');
+        } catch (err) {
+            next(err);
         }
     },
     // /[POST] /admin/check-user-action/
@@ -114,27 +138,27 @@ const AdminController = {
             .catch(next);
     },
     //[POST] /admin/user/store
-    storeUser: async(req, res, next) => {
+    storeUser: async (req, res, next) => {
         const { fullname, email, password, phone, address } = req.body;
-        try{
+        try {
             if (!req.file) {
                 next(new Error('No file uploaded!'));
                 return;
-              }
-        const user = await User({
-            fullname,
-            email,
-            password,
-            phone,
-            address,
-            image:{
-                public_id: req.file.filename,
-                url: req.file.path
             }
-        });
-        await user.save()
-        res.redirect('/admin/user/list')
-        }catch(err){
+            const user = await User({
+                fullname,
+                email,
+                password,
+                phone,
+                address,
+                image: {
+                    public_id: req.file.filename,
+                    url: req.file.path,
+                },
+            });
+            await user.save();
+            res.redirect('/admin/user/list');
+        } catch (err) {
             next(err);
         }
     },
@@ -232,32 +256,35 @@ const AdminController = {
             next(new Error('No file uploaded!'));
             return;
         }
-        const image ={
+        const image = {
             public_id: req.file.filename,
-            url: req.file.path
+            url: req.file.path,
         };
         const { name, price, description } = req.body;
         const product = new Product({
-             name,
-              price,
-               description,
-               image
-            });
+            name,
+            price,
+            description,
+            image,
+        });
         product
             .save()
             .then(() => res.redirect('/admin/list'))
             .catch(next);
     },
     //[POST] /admin/:id/update
-    updateProduct: async(req, res, next) => {
-        try{
-            if(req.file){
-                req.body.image = {public_id: req.file.filename,url: req.file.path};
+    updateProduct: async (req, res, next) => {
+        try {
+            if (req.file) {
+                req.body.image = {
+                    public_id: req.file.filename,
+                    url: req.file.path,
+                };
             }
-            await uploadCloud.deleteImgCloud(Product,req.params.id)
-            await Product.updateOne({ _id: req.params.id }, req.body)
-            res.redirect('/admin/list')
-        }catch(err){
+            await uploadCloud.deleteImgCloud(Product, req.params.id);
+            await Product.updateOne({ _id: req.params.id }, req.body);
+            res.redirect('/admin/list');
+        } catch (err) {
             next(new Error(err));
         }
     },
